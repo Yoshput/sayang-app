@@ -9,6 +9,7 @@ import SettingsButton from "@/components/SettingsButton";
 import AcabotChat from "@/components/AcabotChat";
 import OnboardingFlow from "@/components/onboarding/OnboardingFlow";
 import TimeCapsule from "@/components/TimeCapsule";
+import MemoryWall from "@/components/MemoryWall";
 import { useProfile } from "@/app/providers";
 import { MOODS, MoodKey } from "@/lib/data";
 
@@ -109,10 +110,12 @@ export default function Home() {
                     partnerBirthDate={profile.partnerBirthDate}
                     partnerName={profile.herName}
                   />
+                  <TimeCapsule />
+                  <PartnerStatusBoard />
                   <FoodRoulette />
                   <HintDrop />
                   {mood && <DateRecommendation />}
-                  <TimeCapsule />
+                  <MemoryWall />
                 </motion.div>
               )}
               {tab === "talk" && (
@@ -168,8 +171,9 @@ export default function Home() {
                   transition={{ duration: 0.22 }}
                 >
                   <SingleMoodHeader mood={mood} onSelect={setMood} />
-                  <HabitTracker />
                   <TimeCapsule />
+                  <HabitTracker />
+                  <MemoryWall />
                 </motion.div>
               )}
               {tab === "habits" && (

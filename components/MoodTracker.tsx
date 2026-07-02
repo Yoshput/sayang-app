@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { MOODS, MoodKey } from "@/lib/data";
+import { useProfile } from "@/app/providers";
 
 export default function MoodTracker({
   herName,
@@ -12,6 +13,8 @@ export default function MoodTracker({
   mood: MoodKey | null;
   onSelect: (m: MoodKey) => void;
 }) {
+  const { profile } = useProfile();
+
   return (
     <div className="px-5 pt-6">
       <motion.div
@@ -20,12 +23,43 @@ export default function MoodTracker({
         transition={{ duration: 0.4 }}
         className="bg-white/40 backdrop-blur-md rounded-3xl p-5 border border-white/50 shadow-softer mb-4"
       >
-        <p className="text-[10px] font-bold text-lilac-500/80 tracking-wider uppercase">
-          Halo, {herName} 🌷
-        </p>
-        <h1 className="font-display text-xl font-bold text-[#7A4A63] leading-snug mt-1">
-          Lagi ngerasa gimana hari ini, Princess?
-        </h1>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-bold text-lilac-500/80 tracking-wider uppercase">
+              Halo, {herName} 🌷
+            </p>
+            <h1 className="font-display text-[15px] font-bold text-[#7A4A63] leading-snug mt-1 break-words">
+              Lagi ngerasa gimana hari ini, Princess?
+            </h1>
+          </div>
+          
+          {/* Avatar bubbles */}
+          <div className="flex items-center gap-1.5 shrink-0 bg-white/40 p-1 rounded-2xl border border-white/30 shadow-inner">
+            {profile?.myAvatar ? (
+              <img
+                src={profile.myAvatar}
+                alt={profile.myName}
+                className="w-8 h-8 rounded-full object-cover border border-blush-200 shadow-sm"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-blush-100 flex items-center justify-center text-[10px] font-bold text-[#7A4A63]">
+                {profile?.myName?.slice(0, 2).toUpperCase()}
+              </div>
+            )}
+            <span className="text-[10px] text-blush-400 animate-pulse">❤️</span>
+            {profile?.partnerAvatar ? (
+              <img
+                src={profile.partnerAvatar}
+                alt={profile.herName}
+                className="w-8 h-8 rounded-full object-cover border border-lilac-200 shadow-sm"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-lilac-100 flex items-center justify-center text-[10px] font-bold text-[#7A4A63]">
+                {profile?.herName?.slice(0, 2).toUpperCase()}
+              </div>
+            )}
+          </div>
+        </div>
       </motion.div>
 
       <div className="flex justify-between gap-2">

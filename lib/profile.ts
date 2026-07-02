@@ -9,6 +9,8 @@ export type Profile = {
   herName?: string;     // partner's nickname
   partnerBirthDate?: string; // yyyy-mm-dd (partner's birthday)
   anniversaryDate?: string; // yyyy-mm-dd
+  myAvatar?: string;    // Base64 data URL
+  partnerAvatar?: string; // Base64 data URL
 };
 
 const STORAGE_KEY = "app:profile:v2";

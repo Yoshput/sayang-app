@@ -21,12 +21,29 @@ export default function SingleMoodHeader({
         transition={{ duration: 0.4 }}
         className="bg-white/40 backdrop-blur-md rounded-3xl p-5 border border-white/50 shadow-softer mb-4"
       >
-        <p className="text-[10px] font-bold text-lilac-500/80 tracking-wider uppercase">
-          Hey, {profile?.myName ?? "bestie"} 🌸
-        </p>
-        <h1 className="font-display text-xl font-bold text-[#7A4A63] leading-snug mt-1">
-          Hari ini lagi gimana perasaannya?
-        </h1>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-bold text-lilac-500/80 tracking-wider uppercase">
+              Hey, {profile?.myName ?? "bestie"} 🌸
+            </p>
+            <h1 className="font-display text-[15px] font-bold text-[#7A4A63] leading-snug mt-1 break-words">
+              Hari ini lagi gimana perasaannya?
+            </h1>
+          </div>
+          
+          {/* Avatar bubble */}
+          {profile?.myAvatar ? (
+            <img
+              src={profile.myAvatar}
+              alt={profile.myName}
+              className="w-9 h-9 rounded-full object-cover border border-blush-200 shadow-sm shrink-0"
+            />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-blush-100 flex items-center justify-center text-xs font-bold text-[#7A4A63] shrink-0">
+              {profile?.myName?.slice(0, 2).toUpperCase()}
+            </div>
+          )}
+        </div>
       </motion.div>
 
       <div className="flex justify-between gap-2">

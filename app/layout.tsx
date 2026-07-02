@@ -57,12 +57,12 @@ export default function RootLayout({
         <GlobalClickSparkle />
 
         {/* Outer Split Layout Container */}
-        <div className="min-h-[100dvh] w-full flex justify-center items-start lg:items-center bg-gradient-to-b from-[#FDE7F3] via-[#F3ECFF] to-[#E9F7EF] py-0 lg:py-10 px-0 lg:px-6">
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 max-w-7xl w-full mx-auto">
+        <div className="min-h-[100dvh] w-full flex justify-center items-start lg:items-center bg-gradient-to-b from-[#FDE7F3] via-[#F3ECFF] to-[#E9F7EF] py-0 lg:py-10 px-0 lg:px-6 overflow-y-auto scroll-smooth">
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 max-w-7xl w-full mx-auto py-10 lg:py-0">
             
-            {/* Left side: Premium Desktop Landing Page (Hidden on Mobile/Tablet) */}
-            <div className="hidden lg:flex flex-col flex-1 max-w-[550px] text-[#7A4A63] space-y-6">
-              <div className="inline-block bg-white/60 backdrop-blur-md border border-blush-200/50 rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide text-blush-500 shadow-softer self-start">
+            {/* Left side: Premium Desktop Landing Page (Scrollable on Mobile) */}
+            <div className="flex flex-col flex-1 max-w-[550px] text-[#7A4A63] space-y-6 px-6 lg:px-0 items-center lg:items-start text-center lg:text-left">
+              <div className="inline-block bg-white/60 backdrop-blur-md border border-blush-200/50 rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide text-blush-500 shadow-softer">
                 ✨ Project Anniversary & Self-Care Companion
               </div>
               
@@ -78,7 +78,7 @@ export default function RootLayout({
               </p>
               
               {/* Creator Cards */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 w-full text-left">
                 <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-softer flex flex-col justify-between">
                   <div>
                     <span className="text-2xl">👩‍🎨</span>
@@ -103,7 +103,7 @@ export default function RootLayout({
               </div>
               
               {/* AI & Tech Stack Section */}
-              <div className="bg-white/40 backdrop-blur-md rounded-3xl p-5 border border-white/50 shadow-softer">
+              <div className="bg-white/40 backdrop-blur-md rounded-3xl p-5 border border-white/50 shadow-softer w-full text-left">
                 <p className="text-[9px] font-display font-bold uppercase tracking-wider text-lilac-500 mb-3">
                   Implementasi & Teknologi:
                 </p>
@@ -116,10 +116,18 @@ export default function RootLayout({
                   <span className="bg-white/90 border border-blush-100 px-3 py-1 rounded-full text-[10px] font-semibold text-[#8A5C74]">📱 PWA Offline-ready</span>
                 </div>
               </div>
+
+              {/* Jump button for mobile */}
+              <a
+                href="#app-frame"
+                className="lg:hidden mt-4 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blush-400 to-lilac-400 text-white font-display font-bold text-xs px-6 py-3 rounded-2xl shadow-soft"
+              >
+                Buka Aplikasi 📱
+              </a>
             </div>
             
             {/* Right side: Mobile Mockup Container */}
-            <div className="relative w-full h-[100dvh] sm:h-[850px] sm:max-w-[420px] sm:rounded-[3rem] sm:shadow-2xl sm:border-[10px] sm:border-white bg-[#FFF8FB] overflow-hidden flex flex-col shrink-0">
+            <div id="app-frame" className="relative w-full h-[100dvh] sm:h-[850px] sm:max-w-[420px] sm:rounded-[3rem] sm:shadow-2xl sm:border-[10px] sm:border-white bg-[#FFF8FB] overflow-hidden flex flex-col shrink-0 scroll-mt-4">
               <ProfileProvider>{children}</ProfileProvider>
             </div>
             
