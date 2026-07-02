@@ -33,7 +33,7 @@ export const DEEP_TALK_QUESTIONS = [
   "Kamu paling takut kehilangan apa dalam hidup kamu sekarang?",
   "Kapan terakhir kali kamu ngerasa bener-bener bangga sama diri sendiri?",
   "Kalau kita bisa pindah ke satu tempat bareng, kamu maunya di mana?",
-  "Ada mimpi yang belum pernah kamu certain ke siapa-siapa?",
+  "Ada mimpi yang belum pernah kamu ceritain ke siapa-siapa?",
   "Hal apa yang pengen banget kamu perbaiki dari cara kita komunikasi?",
   "Menurut kamu, aku paling berubah di bagian mana sejak kita deket?",
   "Kalau besok dunia damai-damai aja, apa hal pertama yang mau kamu lakuin bareng aku?",
@@ -77,6 +77,48 @@ export const DATE_RECOMMENDATIONS: Record<
   tired: {
     dateIdea: "Spa/pijat santai berdua terus tidur cepet, no drama malam ini 🛁",
     outfit: ["#DFF6E9", "#E3F2FF", "#FFFFFF"],
-    makeup: "Ga usah makeup, mateching aja pake sheet mask bareng",
+    makeup: "Ga usah makeup, matching aja pake sheet mask bareng",
   },
 };
+
+// --- Single Mode Data ---
+
+export const TREAT_YOURSELF_OPTIONS = [
+  { label: "Nonton Drakor", emoji: "🎬", note: "Pilih yang happy ending ya!" },
+  { label: "Skincare-an", emoji: "🧴", note: "Double cleanse, sheet mask, slay!" },
+  { label: "Beli Kopi Mahal", emoji: "☕", note: "Deserve it, bestie!" },
+  { label: "Jalan ke Toko Buku", emoji: "📚", note: "Beli satu, liat lainnya" },
+  { label: "Mandi Bubble Bath", emoji: "🛁", note: "Candle + playlist lo-fi 🕯️" },
+  { label: "Order Makanan Enak", emoji: "🍕", note: "Tanpa dihakimi siapapun" },
+  { label: "Tidur Seharian", emoji: "😴", note: "Rest is productive ✨" },
+  { label: "Karaoke Solo", emoji: "🎤", note: "Paling keras, paling lepas!" },
+  { label: "Belanja Online", emoji: "🛍️", note: "Add to cart dulu, bayarnya nanti" },
+  { label: "Masak Resep Baru", emoji: "🍳", note: "Gordon Ramsay siapa takut" },
+  { label: "Meditasi & Journaling", emoji: "🧘", note: "Mind reset yang berarti" },
+  { label: "Ke Salon", emoji: "💅", note: "Pamper yourself, sis!" },
+];
+
+export const HABIT_ITEMS = [
+  { key: "water", label: "Minum 8 gelas air", emoji: "💧" },
+  { key: "sleep", label: "Tidur 7-8 jam", emoji: "😴" },
+  { key: "vitamins", label: "Minum vitamin", emoji: "💊" },
+  { key: "exercise", label: "Gerak / olahraga", emoji: "🏃" },
+  { key: "skincare", label: "Skincare rutin", emoji: "✨" },
+  { key: "journal", label: "Journaling", emoji: "📓" },
+  { key: "healthy_food", label: "Makan bergizi", emoji: "🥗" },
+  { key: "meditation", label: "Meditasi 5 menit", emoji: "🧘" },
+] as const;
+
+export type HabitKey = typeof HABIT_ITEMS[number]["key"];
+
+// Partner status options for couple mode
+export const PARTNER_STATUSES = [
+  { key: "happy", label: "Lagi Bahagia 🥰", emoji: "🥰", color: "#F98FC2", bg: "#FFF2F9" },
+  { key: "pms", label: "PMS ⚠️", emoji: "⚠️", color: "#FF6B6B", bg: "#FFF0F0" },
+  { key: "gaming", label: "Nge-game 🎮", emoji: "🎮", color: "#7B68EE", bg: "#F0EEFF" },
+  { key: "busy", label: "Kerjaan Numpuk 💻", emoji: "💻", color: "#B58AF5", bg: "#F6EEFF" },
+  { key: "sleepy", label: "Ngantuk 😴", emoji: "😴", color: "#94DCB6", bg: "#F0FBF6" },
+  { key: "overthinking", label: "Overthinking 🌀", emoji: "🌀", color: "#FFA877", bg: "#FFF7F0" },
+  { key: "need_hug", label: "Butuh Pelukan 🤗", emoji: "🤗", color: "#FCAFD6", bg: "#FFF6FA" },
+  { key: "angry", label: "Lagi Kesel 😤", emoji: "😤", color: "#FF8E55", bg: "#FFF3EE" },
+];

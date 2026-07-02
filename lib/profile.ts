@@ -1,18 +1,24 @@
+export type AppMode = "single" | "couple";
+
 export type Profile = {
-  herName: string;
-  anniversaryDate: string; // yyyy-mm-dd
-  birthDate: string; // yyyy-mm-dd
+  mode: AppMode;
+  // Universal
+  myName: string;       // own name (single: user name, couple: "your" name)
+  birthDate: string;    // yyyy-mm-dd (own birthday)
+  // Couple-only
+  herName?: string;     // partner's nickname
+  anniversaryDate?: string; // yyyy-mm-dd
 };
 
-const STORAGE_KEY = "untuk-acha:profile";
+const STORAGE_KEY = "app:profile:v2";
 
 export function loadProfile(): Profile | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (!parsed.herName || !parsed.anniversaryDate || !parsed.birthDate) return null;
+    const parsed = JSON.parse(raw) as Profile;
+    if (!parsed.mode || !parsed.myName || !parsed.birthDate) return null;
     return parsed;
   } catch {
     return null;

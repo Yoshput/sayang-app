@@ -11,6 +11,7 @@ body {
   overscroll-behavior: none;
 }
 
+/* Hide scrollbar across all browsers */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -19,11 +20,98 @@ body {
   scrollbar-width: none;
 }
 
+/* 3D card flip */
 .card-3d {
   transform-style: preserve-3d;
 }
 .backface-hidden {
   backface-visibility: hidden;
+}
+
+/* Shimmer loading effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Date input styling for iOS/Android */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+/* Custom focus ring */
+.focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(249, 143, 194, 0.35);
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.glass-dark {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.40);
+}
+
+/* Chat bubble animations */
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.bubble-in {
+  animation: bubble-in 0.25s ease-out forwards;
+}
+
+/* Typing indicator dots */
+@keyframes typing-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+.typing-dot {
+  animation: typing-dot 1.2s ease-in-out infinite;
+}
+
+/* Sparkle click burst */
+@keyframes sparkle-out {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.5) rotate(60deg); opacity: 0; }
+}
+
+.sparkle-burst {
+  animation: sparkle-out 0.6s ease-out forwards;
+}
+
+/* Floating blobs for backgrounds */
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(20px, -15px) scale(1.05); }
+  66% { transform: translate(-15px, 10px) scale(0.97); }
+}
+
+.blob-drift {
+  animation: blob-drift 12s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
