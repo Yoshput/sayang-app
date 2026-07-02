@@ -122,21 +122,40 @@ export default function OnboardingFlow() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className="text-center glass rounded-[2rem] p-8"
+              className="text-center glass rounded-[2rem] p-6 max-h-[78vh] overflow-y-auto no-scrollbar"
             >
               <motion.div
-                animate={{ y: [0, -12, 0] }}
+                animate={{ y: [0, -8, 0] }}
                 transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-                className="text-7xl mb-6 inline-block"
+                className="text-5xl mb-4 inline-block"
               >
                 💌
               </motion.div>
-              <h1 className="font-display text-2xl font-bold text-[#7A4A63] leading-snug">
-                Selamat datang! 🌸
+              <h1 className="font-display text-xl font-bold text-[#7A4A63] leading-snug">
+                Untuk Dia 🌸
               </h1>
-              <p className="text-xs text-lilac-500/90 mt-3 leading-relaxed">
-                Aplikasi ini bisa dipake buat jomlo yang mau self-care, atau pasangan yang mau lebih
-                terkoneksi. Yuk setup dulu!
+              <p className="text-[10px] text-lilac-500 font-display font-semibold uppercase tracking-wider mt-1">
+                Self-Care & Couple Sync Companion
+              </p>
+              
+              <div className="mt-4 p-3 bg-white/50 rounded-2xl border border-blush-100/50 text-left space-y-2.5 text-[11px] text-[#8A5C74] leading-relaxed">
+                <p>
+                  Aplikasi ini dibuat sebagai ruang hangat untuk merawat diri (*Self-Care*) bagi yang sedang sendiri, serta menyelaraskan hubungan (*Couple Sync*) bagi yang berpasangan.
+                </p>
+                <div className="h-px bg-blush-100/40 my-2" />
+                <p>
+                  💡 <strong>Ide Awal:</strong> Digagas oleh <strong>Salsabilla Nurul Hassanah (Baby Acha)</strong> yang ingin membuat ruang komunikasi yang lucu dan interaktif.
+                </p>
+                <p>
+                  👨‍💻 <strong>Developer:</strong> Diwujudkan oleh <strong>Yossika Putra Erlangga</strong> (Mahasiswa S1 Teknik Informatika), selaku kesayangannya Acha.
+                </p>
+                <p>
+                  🤖 <strong>AI Assistant:</strong> Dibantu oleh <strong>AI Antigravity</strong> untuk implementasi kode dan detail interaksinya.
+                </p>
+              </div>
+
+              <p className="text-[10px] font-display font-bold text-blush-500 mt-4 animate-pulse">
+                Terima kasih banyak untuk Acha! 💖✨
               </p>
             </motion.div>
           )}
@@ -413,7 +432,7 @@ export default function OnboardingFlow() {
 
       {/* Footer nav */}
       <div className="px-6 pb-7 relative z-10 min-h-[68px] flex items-center justify-between">
-        {!isFinalStep && step !== 1 && (
+        {!isFinalStep && step !== 1 && step !== 0 && (
           <>
             <button
               onClick={goBack}
