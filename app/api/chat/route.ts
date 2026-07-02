@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   try {
     const { messages, mode, myName, partnerName } = await req.json();
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Build a system persona based on mode
     const systemPrompt =
