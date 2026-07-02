@@ -53,7 +53,7 @@ export default function RootLayout({
       >
         {/* Desktop: centered "cute widget" phone frame. Mobile: full width native-app feel. */}
         <div className="min-h-[100dvh] w-full flex justify-center items-start sm:items-center bg-gradient-to-b from-[#FDE7F3] via-[#F3ECFF] to-[#E9F7EF] sm:py-10">
-          <div className="relative w-full min-h-[100dvh] sm:min-h-[850px] sm:h-[850px] sm:max-w-[420px] sm:rounded-[3rem] sm:shadow-2xl sm:border-[10px] sm:border-white bg-[#FFF8FB] overflow-hidden">
+          <div className="relative w-full h-[100dvh] sm:h-[850px] sm:max-w-[420px] sm:rounded-[3rem] sm:shadow-2xl sm:border-[10px] sm:border-white bg-[#FFF8FB] overflow-hidden flex flex-col">
             <ProfileProvider>{children}</ProfileProvider>
           </div>
         </div>
