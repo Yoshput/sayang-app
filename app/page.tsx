@@ -8,6 +8,7 @@ import BottomNav, { TabKey } from "@/components/BottomNav";
 import SettingsButton from "@/components/SettingsButton";
 import AcabotChat from "@/components/AcabotChat";
 import OnboardingFlow from "@/components/onboarding/OnboardingFlow";
+import TimeCapsule from "@/components/TimeCapsule";
 import { useProfile } from "@/app/providers";
 import { MOODS, MoodKey } from "@/lib/data";
 
@@ -105,10 +106,13 @@ export default function Home() {
                   <AnniversaryCard
                     anniversaryDate={profile.anniversaryDate ?? ""}
                     birthDate={profile.birthDate}
+                    partnerBirthDate={profile.partnerBirthDate}
+                    partnerName={profile.herName}
                   />
                   <FoodRoulette />
                   <HintDrop />
                   {mood && <DateRecommendation />}
+                  <TimeCapsule />
                 </motion.div>
               )}
               {tab === "talk" && (
@@ -165,6 +169,7 @@ export default function Home() {
                 >
                   <SingleMoodHeader mood={mood} onSelect={setMood} />
                   <HabitTracker />
+                  <TimeCapsule />
                 </motion.div>
               )}
               {tab === "habits" && (

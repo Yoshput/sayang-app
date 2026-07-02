@@ -7,6 +7,7 @@ export type Profile = {
   birthDate: string;    // yyyy-mm-dd (own birthday)
   // Couple-only
   herName?: string;     // partner's nickname
+  partnerBirthDate?: string; // yyyy-mm-dd (partner's birthday)
   anniversaryDate?: string; // yyyy-mm-dd
 };
 
@@ -19,6 +20,7 @@ export function loadProfile(): Profile | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Profile;
     if (!parsed.mode || !parsed.myName || !parsed.birthDate) return null;
+    // For couple mode, make sure new fields are loaded if present
     return parsed;
   } catch {
     return null;

@@ -57,7 +57,7 @@ export default function RootLayout({
         <GlobalClickSparkle />
 
         {/* Outer Split Layout Container */}
-        <div className="min-h-[100dvh] w-full flex justify-center items-start lg:items-center bg-gradient-to-b from-[#FDE7F3] via-[#F3ECFF] to-[#E9F7EF] py-0 lg:py-10 px-4 sm:px-6">
+        <div className="min-h-[100dvh] w-full flex justify-center items-start lg:items-center bg-gradient-to-b from-[#FDE7F3] via-[#F3ECFF] to-[#E9F7EF] py-0 lg:py-10 px-0 lg:px-6">
           <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 max-w-7xl w-full mx-auto">
             
             {/* Left side: Premium Desktop Landing Page (Hidden on Mobile/Tablet) */}

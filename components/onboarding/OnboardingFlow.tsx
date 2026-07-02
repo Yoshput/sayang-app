@@ -21,9 +21,10 @@ export default function OnboardingFlow() {
   const [myName, setMyName] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [herName, setHerName] = useState("");
+  const [partnerBirthDate, setPartnerBirthDate] = useState("");
   const [anniversaryDate, setAnniversaryDate] = useState("");
 
-  const totalSteps = mode === "couple" ? 6 : 4;
+  const totalSteps = mode === "couple" ? 7 : 4;
 
   const canNext = useMemo(() => {
     if (step === 0) return true;
@@ -31,10 +32,11 @@ export default function OnboardingFlow() {
     if (step === 2) return myName.trim().length > 0;
     if (step === 3) return birthDate.length > 0 && birthDate <= todayStr();
     if (step === 4) return herName.trim().length > 0; // couple only
-    if (step === 5)
+    if (step === 5) return partnerBirthDate.length > 0 && partnerBirthDate <= todayStr(); // couple only
+    if (step === 6)
       return anniversaryDate.length > 0 && anniversaryDate <= todayStr(); // couple only
     return true;
-  }, [step, mode, myName, birthDate, herName, anniversaryDate]);
+  }, [step, mode, myName, birthDate, herName, partnerBirthDate, anniversaryDate]);
 
   const goNext = () => {
     if (!canNext) return;
@@ -49,6 +51,7 @@ export default function OnboardingFlow() {
       myName: myName.trim(),
       birthDate,
       herName: mode === "couple" ? herName.trim() : undefined,
+      partnerBirthDate: mode === "couple" ? partnerBirthDate : undefined,
       anniversaryDate: mode === "couple" ? anniversaryDate : undefined,
     });
   };
@@ -333,10 +336,53 @@ export default function OnboardingFlow() {
             </motion.div>
           )}
 
-          {/* ---- Step 5: Anniversary (couple only) ---- */}
+          {/* ---- Step 5: Partner Birthday (couple only) ---- */}
           {step === 5 && mode === "couple" && (
             <motion.div
               key="s5"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.3 }}
+              className="glass rounded-[2rem] p-7"
+            >
+              <div className="flex items-center gap-2 mb-5">
+                <div className="bg-lilac-100 p-2 rounded-xl text-lilac-500">
+                  <Cake size={22} />
+                </div>
+                <div>
+                  <h2 className="font-display text-lg font-bold text-[#7A4A63]">
+                    Kapan ulang tahun {herName}?
+                  </h2>
+                  <p className="text-[10px] text-lilac-400">Biar tau zodiak & countdown ultah pacarmu</p>
+                </div>
+              </div>
+              <input
+                type="date"
+                autoFocus
+                max={todayStr()}
+                value={partnerBirthDate}
+                onChange={(e) => setPartnerBirthDate(e.target.value)}
+                className="w-full rounded-2xl border border-blush-200 bg-white/90 px-4 py-3.5 text-base font-display font-semibold text-[#7A4A63] outline-none focus:border-blush-400 focus:ring-4 focus:ring-blush-100 transition-all shadow-softer"
+              />
+              {partnerBirthDate && partnerBirthDate <= todayStr() && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 p-3 bg-lilac-50 rounded-xl border border-lilac-100 text-center"
+                >
+                  <p className="text-xs text-lilac-500 font-display font-bold">
+                    Zodiaknya {getZodiac(partnerBirthDate).name} {getZodiac(partnerBirthDate).emoji} ✨
+                  </p>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+
+          {/* ---- Step 6: Anniversary (couple only) ---- */}
+          {step === 6 && mode === "couple" && (
+            <motion.div
+              key="s6"
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -30 }}
@@ -403,8 +449,14 @@ export default function OnboardingFlow() {
               <div className="mt-5 bg-white/80 rounded-2xl p-4 shadow-softer border border-blush-100 text-left space-y-2.5">
                 <p className="text-xs text-[#8A5C74] flex items-center gap-2">
                   <Sparkles size={13} className="text-lilac-400 shrink-0" />
-                  <span>Zodiak {getZodiac(birthDate).name} {getZodiac(birthDate).emoji}</span>
+                  <span>Zodiakmu: <strong>{getZodiac(birthDate).name} {getZodiac(birthDate).emoji}</strong></span>
                 </p>
+                {mode === "couple" && partnerBirthDate && (
+                  <p className="text-xs text-[#8A5C74] flex items-center gap-2">
+                    <Sparkles size={13} className="text-blush-400 shrink-0" />
+                    <span>Zodiak {herName}: <strong>{getZodiac(partnerBirthDate).name} {getZodiac(partnerBirthDate).emoji}</strong></span>
+                  </p>
+                )}
                 {mode === "couple" && anniversaryDate && (
                   <p className="text-xs text-[#8A5C74] flex items-center gap-2">
                     <Heart size={13} className="text-blush-400 shrink-0" fill="currentColor" />
