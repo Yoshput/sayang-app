@@ -165,6 +165,26 @@ export default function SettingsButton() {
                     )}
                   </div>
                   <div className="h-px bg-blush-100" />
+
+                  {/* Period Tracker Toggle - Single Mode only */}
+                  {profile.mode === "single" && (
+                    <div className="flex items-center justify-between bg-pink-50/50 p-2.5 rounded-2xl border border-pink-100/50">
+                      <div>
+                        <p className="text-[11px] font-display font-bold text-[#7A4A63]">🌙 Pelacak Siklus Haid</p>
+                        <p className="text-[9px] text-lilac-400 font-display mt-0.5">Aktifkan di tab Home</p>
+                      </div>
+                      <button
+                        onClick={() => setProfile({ ...profile, trackPeriod: !profile.trackPeriod })}
+                        className={`relative w-10 h-5 rounded-full transition-all duration-300 ${
+                          profile.trackPeriod ? "bg-gradient-to-r from-blush-400 to-lilac-400" : "bg-gray-200"
+                        }`}
+                      >
+                        <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-300 ${
+                          profile.trackPeriod ? "left-5.5" : "left-0.5"
+                        }`} />
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

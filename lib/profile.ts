@@ -11,6 +11,7 @@ export type Profile = {
   anniversaryDate?: string; // yyyy-mm-dd
   myAvatar?: string;    // Base64 data URL
   partnerAvatar?: string; // Base64 data URL
+  trackPeriod?: boolean; // toggle to track period cycle
 };
 
 const STORAGE_KEY = "app:profile:v2";

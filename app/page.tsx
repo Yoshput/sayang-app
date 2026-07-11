@@ -29,6 +29,7 @@ import SingleMoodHeader from "@/components/single/SingleMoodHeader";
 import HabitTracker from "@/components/single/HabitTracker";
 import TreatRoulette from "@/components/single/TreatRoulette";
 import WishlistTracker from "@/components/single/WishlistTracker";
+import SelfCareRecommendation from "@/components/single/SelfCareRecommendation";
 
 export default function Home() {
   const { profile, ready } = useProfile();
@@ -171,8 +172,10 @@ export default function Home() {
                   transition={{ duration: 0.22 }}
                 >
                   <SingleMoodHeader mood={mood} onSelect={setMood} />
+                  {mood && <SelfCareRecommendation mood={mood} />}
                   <TimeCapsule />
                   <HabitTracker />
+                  {profile.trackPeriod && <PeriodTracker />}
                   <MemoryWall />
                 </motion.div>
               )}

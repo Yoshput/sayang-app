@@ -83,6 +83,37 @@ export const DATE_RECOMMENDATIONS: Record<
 
 // --- Single Mode Data ---
 
+export const SELF_CARE_RECOMMENDATIONS: Record<
+  MoodKey,
+  { idea: string; outfit: string[]; tip: string }
+> = {
+  happy: {
+    idea: "Bikin iced coffee favoritmu, dengerin lagu up-beat, dan beresin kamar sambil nari tipis-tipis 🎶",
+    outfit: ["#FFD9E8", "#FFF3D0", "#FFFFFF"],
+    tip: "Jangan lupa abadikan senyum serumu hari ini!",
+  },
+  sad: {
+    idea: "Nonton film komedi/comfort movie hangat sambil selimutan dan minum teh anget ☕",
+    outfit: ["#E3E9FF", "#F1E7FE", "#F5F5F5"],
+    tip: "It's okay to cry. Cuci muka pakai air dingin setelahnya ya.",
+  },
+  angry: {
+    idea: "Olahraga kardio, journaling coret-coret emosi, atau dengerin musik rock kencang-kencang 🎧",
+    outfit: ["#2B2B2B", "#FFD1E8", "#FFFFFF"],
+    tip: "Tarik napas dalam 4 detik, tahan 7 detik, hembuskan 8 detik.",
+  },
+  cuddly: {
+    idea: "Pakai piyama paling lembut, baca novel kesukaan, dan peluk bantal guling seharian 🧸",
+    outfit: ["#FFE0EF", "#F1E7FE", "#FFF8ED"],
+    tip: "Manjakan dirimu dengan cemilan manis favorit.",
+  },
+  tired: {
+    idea: "Mandi air hangat, pasang sheet mask dingin, lalu tidur lebih awal tanpa gadget 😴",
+    outfit: ["#DFF6E9", "#E3F2FF", "#FFFFFF"],
+    tip: "Matikan semua notifikasi malam ini. Kamu berhak istirahat.",
+  },
+};
+
 export const TREAT_YOURSELF_OPTIONS = [
   { label: "Nonton Drakor", emoji: "🎬", note: "Pilih yang happy ending ya!" },
   { label: "Skincare-an", emoji: "🧴", note: "Double cleanse, sheet mask, slay!" },

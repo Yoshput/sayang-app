@@ -23,14 +23,18 @@ export default function OnboardingFlow() {
   const [herName, setHerName] = useState("");
   const [partnerBirthDate, setPartnerBirthDate] = useState("");
   const [anniversaryDate, setAnniversaryDate] = useState("");
+  const [trackPeriod, setTrackPeriod] = useState(false);
 
-  const totalSteps = mode === "couple" ? 7 : 4;
+  // Single: 0=welcome, 1=mode, 2=myName, 3=birthDate, 4=periodToggle, 5=final
+  // Couple: 0=welcome, 1=mode, 2=myName, 3=birthDate, 4=herName, 5=partnerBirth, 6=anniversary, 7=final
+  const totalSteps = mode === "couple" ? 7 : 5;
 
   const canNext = useMemo(() => {
     if (step === 0) return true;
     if (step === 1) return mode !== null;
     if (step === 2) return myName.trim().length > 0;
     if (step === 3) return birthDate.length > 0 && birthDate <= todayStr();
+    if (mode === "single" && step === 4) return true; // period toggle always optional
     if (step === 4) return herName.trim().length > 0; // couple only
     if (step === 5) return partnerBirthDate.length > 0 && partnerBirthDate <= todayStr(); // couple only
     if (step === 6)
@@ -53,6 +57,7 @@ export default function OnboardingFlow() {
       herName: mode === "couple" ? herName.trim() : undefined,
       partnerBirthDate: mode === "couple" ? partnerBirthDate : undefined,
       anniversaryDate: mode === "couple" ? anniversaryDate : undefined,
+      trackPeriod: mode === "single" ? trackPeriod : undefined,
     });
   };
 
@@ -304,7 +309,59 @@ export default function OnboardingFlow() {
             </motion.div>
           )}
 
-          {/* ---- Step 4: Partner Name (couple only) ---- */}
+          {/* ---- Step 4 (Single): Period Tracker Opt-in ---- */}
+          {step === 4 && mode === "single" && (
+            <motion.div
+              key="s4-single"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.3 }}
+              className="glass rounded-[2rem] p-7"
+            >
+              <div className="text-center mb-6">
+                <motion.div
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
+                  className="text-5xl inline-block mb-3"
+                >
+                  🌙
+                </motion.div>
+                <h2 className="font-display text-lg font-bold text-[#7A4A63]">
+                  Lacak Siklus Haid?
+                </h2>
+                <p className="text-[10px] text-lilac-400 mt-1">
+                  Pantau fase siklus, lacak gejala, dan prediksi haid berikutnya.
+                </p>
+              </div>
+              <div className="space-y-3">
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => { setTrackPeriod(true); goNext(); }}
+                  className="w-full flex items-center gap-3 p-4 rounded-2xl border-2 bg-white/80 shadow-softer text-left transition-all duration-200 border-blush-300 bg-blush-50/60"
+                >
+                  <span className="text-2xl">✅</span>
+                  <div>
+                    <p className="font-display font-bold text-sm text-[#7A4A63]">Ya, aktifkan!</p>
+                    <p className="text-[10px] text-lilac-400">Buat fitur siklus muncul di Home</p>
+                  </div>
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => { setTrackPeriod(false); goNext(); }}
+                  className="w-full flex items-center gap-3 p-4 rounded-2xl border-2 bg-white/80 shadow-softer text-left transition-all duration-200 border-white/30"
+                >
+                  <span className="text-2xl">➡️</span>
+                  <div>
+                    <p className="font-display font-bold text-sm text-[#7A4A63]">Skip dulu</p>
+                    <p className="text-[10px] text-lilac-400">Bisa diaktifkan nanti di Pengaturan</p>
+                  </div>
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ---- Step 4 (Couple): Partner Name ---- */}
           {step === 4 && mode === "couple" && (
             <motion.div
               key="s4"
