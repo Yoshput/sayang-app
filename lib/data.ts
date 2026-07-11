@@ -142,6 +142,62 @@ export const HABIT_ITEMS = [
 
 export type HabitKey = typeof HABIT_ITEMS[number]["key"];
 
+// --- Mood-based Food Picker ---
+export type FoodItem = { name: string; emoji: string; category: string; note: string };
+
+export const FOODS_BY_MOOD: Record<MoodKey, FoodItem[]> = {
+  happy: [
+    { name: "Boba Brown Sugar", emoji: "🧋", category: "Minuman", note: "Bikin mood makin party!" },
+    { name: "Sushi Roll", emoji: "🍣", category: "Jepang", note: "Fresh vibes only~" },
+    { name: "Rainbow Salad Bowl", emoji: "🥗", category: "Sehat", note: "Colorful seperti harimu" },
+    { name: "Pancake Stack", emoji: "🥞", category: "Brunch", note: "Sirup maple wajib double" },
+    { name: "Pizza Party", emoji: "🍕", category: "Fast Food", note: "Pesan size XL dong" },
+    { name: "Ice Cream Sundae", emoji: "🍨", category: "Dessert", note: "3 scoop, kalori gak ngitung" },
+    { name: "Ayam Geprek Keju", emoji: "🍗", category: "Lokal", note: "Level dewa tapi worth it" },
+    { name: "Mie Goreng Special", emoji: "🍜", category: "Lokal", note: "Extra cabe, extra kebahagiaan" },
+  ],
+  sad: [
+    { name: "Ramen Tonkotsu", emoji: "🍜", category: "Jepang", note: "Soup anget buat hati" },
+    { name: "Nasi Goreng Telur", emoji: "🍳", category: "Comfort", note: "Masak sendiri pake cinta" },
+    { name: "Soto Ayam Hangat", emoji: "🍲", category: "Berkuah", note: "Kayak dipeluk dari dalam" },
+    { name: "Cokelat Hangat", emoji: "☕", category: "Minuman", note: "Full marshmallow ya" },
+    { name: "Mie Kuah Telor", emoji: "🍝", category: "Comfort", note: "Simple tapi healing" },
+    { name: "Pudding Cokelat", emoji: "🍮", category: "Dessert", note: "Manis untuk menemanimu" },
+    { name: "Bakso Kuah", emoji: "🍵", category: "Berkuah", note: "Order gede, habis sendiri" },
+    { name: "Toast Nutella", emoji: "🍞", category: "Snack", note: "Thick spread, no shame" },
+  ],
+  angry: [
+    { name: "Ayam Geprek Level 10", emoji: "🌶️", category: "Pedas", note: "Buang emosi lewat pedas!" },
+    { name: "Tteokbokki Spicy", emoji: "🍢", category: "Korea", note: "Nangis dikit itu wajar" },
+    { name: "Kimchi Jjigae", emoji: "🫕", category: "Korea", note: "Fermentasi = pelepas emosi" },
+    { name: "Sambal Matah + Ikan", emoji: "🐟", category: "Pedas", note: "Makan sambil ngomel" },
+    { name: "Buldak Ramyeon", emoji: "🍜", category: "Pedas", note: "2x spicy challenge!" },
+    { name: "Karaoke + Gorengan", emoji: "🧆", category: "Snack", note: "Teriak dulu, makan kemudian" },
+    { name: "Nasi Padang Rendang", emoji: "🍛", category: "Lokal", note: "Rendang mengobati segalanya" },
+    { name: "Burger Double Patty", emoji: "🍔", category: "Fast Food", note: "Gigit sekuat tenaga" },
+  ],
+  cuddly: [
+    { name: "Strawberry Latte", emoji: "🍓", category: "Minuman", note: "Pink & cute seperti kamu" },
+    { name: "Macaroon Mix", emoji: "🧁", category: "Dessert", note: "Warna-warni bikin gemes" },
+    { name: "Onigiri Isi Tuna", emoji: "🍙", category: "Jepang", note: "Imut banget kayak kamu" },
+    { name: "Crepe Buah Segar", emoji: "🥞", category: "Dessert", note: "Makan sambil peluk-pelukan" },
+    { name: "Dimsum Semua", emoji: "🥟", category: "Cina", note: "Order semua keranjangnya" },
+    { name: "Mochi Ice Cream", emoji: "🍡", category: "Dessert", note: "Lucu, kenyal, manis!" },
+    { name: "Waffle + Berry", emoji: "🧇", category: "Brunch", note: "Aesthetic banget" },
+    { name: "Croffles", emoji: "🥐", category: "Cafe", note: "Korean croissant waffle goals" },
+  ],
+  tired: [
+    { name: "Bubur Ayam Hangat", emoji: "🥣", category: "Comfort", note: "Simple, gampang, menyembuhkan" },
+    { name: "Oatmeal + Madu", emoji: "🫙", category: "Sehat", note: "Energi balik pelan-pelan" },
+    { name: "Delivery Nasi Goreng", emoji: "🍳", category: "Delivery", note: "Gojek aja, jangan masak" },
+    { name: "Smoothie Bowl", emoji: "🥤", category: "Sehat", note: "Nutrisi buat recharge" },
+    { name: "Indomie Rebus Telor", emoji: "🍜", category: "Comfort", note: "Life saver sejati" },
+    { name: "Sandwich Keju Panggang", emoji: "🥪", category: "Cepat", note: "3 menit udah jadi" },
+    { name: "Yogurt + Granola", emoji: "🍦", category: "Sehat", note: "Ringan tapi kenyang" },
+    { name: "Sup Tomat Hangat", emoji: "🍅", category: "Berkuah", note: "Anget = istirahat yang cukup" },
+  ],
+};
+
 // Partner status options for couple mode
 export const PARTNER_STATUSES = [
   { key: "happy", label: "Lagi Bahagia 🥰", emoji: "🥰", color: "#F98FC2", bg: "#FFF2F9" },
