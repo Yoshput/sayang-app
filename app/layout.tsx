@@ -3,6 +3,7 @@ import { Poppins, Quicksand } from "next/font/google";
 import "./globals.css";
 import { ProfileProvider } from "@/app/providers";
 import GlobalClickSparkle from "@/components/GlobalClickSparkle";
+import AppShell from "@/components/AppShell";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -50,89 +51,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id">
+      <head>
+        {/* Apple PWA — required for iPhone "Add to Home Screen" install */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Untuk Dia" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512.png" />
+      </head>
       <body
         className={`${poppins.variable} ${quicksand.variable} font-sans bg-[#FDEFF6] antialiased`}
       >
-        {/* Global sparkle click effect */}
-        <GlobalClickSparkle />
-
-        {/* Outer Split Layout Container */}
-        <div className="min-h-[100dvh] w-full flex justify-center items-start lg:items-center bg-gradient-to-b from-[#FDE7F3] via-[#F3ECFF] to-[#E9F7EF] py-0 lg:py-10 px-0 lg:px-6 overflow-y-auto scroll-smooth">
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 max-w-7xl w-full mx-auto py-10 lg:py-0">
-            
-            {/* Left side: Premium Desktop Landing Page (Scrollable on Mobile) */}
-            <div className="flex flex-col flex-1 max-w-[550px] text-[#7A4A63] space-y-6 px-6 lg:px-0 items-center lg:items-start text-center lg:text-left">
-              <div className="inline-block bg-white/60 backdrop-blur-md border border-blush-200/50 rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide text-blush-500 shadow-softer">
-                ✨ Project Anniversary & Self-Care Companion
-              </div>
-              
-              <h1 className="font-display text-4xl lg:text-5xl font-bold leading-tight">
-                Hubungkan Hati, <br />
-                <span className="bg-gradient-to-r from-blush-500 via-[#B58AF5] to-magenta-400 bg-clip-text text-transparent">
-                  Rawat Diri Sendiri.
-                </span>
-              </h1>
-              
-              <p className="text-sm leading-relaxed text-[#8A5C74]/90 font-medium">
-                Aplikasi interaktif yang dirancang khusus untuk membantu merawat kesehatan mental pribadi (*Self-Care*) sekaligus menyelaraskan komunikasi dan kebersamaan dengan pasangan (*Couple Sync*).
-              </p>
-              
-              {/* Creator Cards */}
-              <div className="grid grid-cols-2 gap-4 w-full text-left">
-                <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-softer flex flex-col justify-between">
-                  <div>
-                    <span className="text-2xl">👩‍🎨</span>
-                    <h3 className="font-display font-bold text-xs mt-2 text-[#7A4A63]">Salsabilla Nurul H. (Acha)</h3>
-                    <p className="text-[9px] text-lilac-400 font-bold uppercase tracking-wider mt-0.5">Ideator & Inspirasi</p>
-                  </div>
-                  <p className="text-[10px] text-[#8A5C74]/80 mt-2 leading-relaxed">
-                    Pemilik ide awal dan inspirasi utama pembuatan web manis ini. 💖
-                  </p>
-                </div>
-                
-                <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-softer flex flex-col justify-between">
-                  <div>
-                    <span className="text-2xl">👨‍💻</span>
-                    <h3 className="font-display font-bold text-xs mt-2 text-[#7A4A63]">Yossika Putra Erlangga</h3>
-                    <p className="text-[9px] text-lilac-400 font-bold uppercase tracking-wider mt-0.5">Developer</p>
-                  </div>
-                  <p className="text-[10px] text-[#8A5C74]/80 mt-2 leading-relaxed">
-                    Mahasiswa S1 Teknik Informatika, selaku implementator program.
-                  </p>
-                </div>
-              </div>
-              
-              {/* AI & Tech Stack Section */}
-              <div className="bg-white/40 backdrop-blur-md rounded-3xl p-5 border border-white/50 shadow-softer w-full text-left">
-                <p className="text-[9px] font-display font-bold uppercase tracking-wider text-lilac-500 mb-3">
-                  Implementasi & Teknologi:
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <span className="bg-white/90 border border-blush-100 px-3 py-1 rounded-full text-[10px] font-semibold text-[#8A5C74]">🤖 Antigravity AI (Asisten)</span>
-                  <span className="bg-white/90 border border-blush-100 px-3 py-1 rounded-full text-[10px] font-semibold text-[#8A5C74]">⚡ Next.js 14 (App Router)</span>
-                  <span className="bg-white/90 border border-blush-100 px-3 py-1 rounded-full text-[10px] font-semibold text-[#8A5C74]">🎨 Tailwind CSS</span>
-                  <span className="bg-white/90 border border-blush-100 px-3 py-1 rounded-full text-[10px] font-semibold text-[#8A5C74]">✨ Framer Motion</span>
-                  <span className="bg-white/90 border border-blush-100 px-3 py-1 rounded-full text-[10px] font-semibold text-[#8A5C74]">🔮 Gemini 2.5 Flash API</span>
-                  <span className="bg-white/90 border border-blush-100 px-3 py-1 rounded-full text-[10px] font-semibold text-[#8A5C74]">📱 PWA Offline-ready</span>
-                </div>
-              </div>
-
-              {/* Jump button for mobile */}
-              <a
-                href="#app-frame"
-                className="lg:hidden mt-4 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blush-400 to-lilac-400 text-white font-display font-bold text-xs px-6 py-3 rounded-2xl shadow-soft"
-              >
-                Buka Aplikasi 📱
-              </a>
-            </div>
-            
-            {/* Right side: Mobile Mockup Container */}
-            <div id="app-frame" className="relative w-full h-[100dvh] sm:h-[850px] sm:max-w-[420px] sm:rounded-[3rem] sm:shadow-2xl sm:border-[10px] sm:border-white bg-[#FFF8FB] overflow-hidden flex flex-col shrink-0 scroll-mt-4">
-              <ProfileProvider>{children}</ProfileProvider>
-            </div>
-            
-          </div>
-        </div>
+        {/* ProfileProvider wraps everything — AppShell & LandingPanel can both read profile */}
+        <ProfileProvider>
+          <GlobalClickSparkle />
+          {/* AppShell handles: full-screen mobile when logged in, landing+app when not */}
+          <AppShell>{children}</AppShell>
+        </ProfileProvider>
       </body>
     </html>
   );
