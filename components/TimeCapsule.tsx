@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, X, Lock, Unlock, Mail, Calendar, Sparkles } from "lucide-react";
+import { Plus, X, Lock, Unlock, Mail, Calendar, Sparkles, Clock, Trash2 } from "lucide-react";
 import { useProfile } from "@/app/providers";
+import IconBadge from "@/components/ui/IconBadge";
 
 interface Letter {
   id: string;
@@ -14,36 +15,32 @@ interface Letter {
   createdAt: number;
 }
 
-const STORAGE_KEY = "capsule:letters";
+const STORAGE_KEY = "couple:letters";
 
 const THEMES = {
   pink: {
-    bg: "bg-gradient-to-br from-[#FFF2F9] to-[#FFD1E8]",
+    bg: "bg-gradient-to-br from-[#FFF0F6] to-[#FFE4EF]",
     border: "border-blush-200",
-    accent: "text-blush-500",
-    headerBg: "bg-blush-100",
-    glow: "shadow-glow",
+    tint: "blush" as const,
+    badge: "bg-blush-100 text-blush-500",
   },
   purple: {
-    bg: "bg-gradient-to-br from-[#F6EEFF] to-[#E3CFFD]",
+    bg: "bg-gradient-to-br from-[#FAF5FF] to-[#EFE8FF]",
     border: "border-lilac-200",
-    accent: "text-lilac-500",
-    headerBg: "bg-lilac-100",
-    glow: "shadow-glow-lilac",
+    tint: "lilac" as const,
+    badge: "bg-lilac-100 text-lilac-500",
   },
   mint: {
-    bg: "bg-gradient-to-br from-[#F1FBF6] to-[#BEEBD2]",
+    bg: "bg-gradient-to-br from-[#F0FDF4] to-[#DCFCE7]",
     border: "border-mint-200",
-    accent: "text-mint-500",
-    headerBg: "bg-mint-100",
-    glow: "shadow-softer",
+    tint: "mint" as const,
+    badge: "bg-mint-100 text-mint-600",
   },
   cream: {
-    bg: "bg-gradient-to-br from-[#FFFDF8] to-[#FCEFD8]",
-    border: "border-orange-100",
-    accent: "text-orange-400",
-    headerBg: "bg-orange-50",
-    glow: "shadow-softer",
+    bg: "bg-gradient-to-br from-[#FFFDF5] to-[#FEF3C7]",
+    border: "border-amber-200",
+    tint: "amber" as const,
+    badge: "bg-amber-100 text-amber-700",
   },
 };
 
@@ -54,9 +51,7 @@ export default function TimeCapsule() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [openDate, setOpenDate] = useState("");
-  const [theme, setTheme] = useState<keyof typeof THEMES>("pink");
-  
-  // Reading state
+  const [theme, setTheme] = useState<"pink" | "purple" | "mint" | "cream">("pink");
   const [activeReadLetter, setActiveReadLetter] = useState<Letter | null>(null);
   const [shakeLetterId, setShakeLetterId] = useState<string | null>(null);
 
@@ -80,7 +75,7 @@ export default function TimeCapsule() {
 
   const handleAdd = () => {
     if (!title.trim() || !content.trim() || !openDate) return;
-    
+
     const newLetter: Letter = {
       id: Date.now().toString(),
       title: title.trim(),
@@ -91,7 +86,10 @@ export default function TimeCapsule() {
     };
 
     saveLetters([...letters, newLetter]);
-    setTitle(""); setContent(""); setOpenDate(""); setTheme("pink");
+    setTitle("");
+    setContent("");
+    setOpenDate("");
+    setTheme("pink");
     setShowAdd(false);
   };
 
@@ -99,22 +97,21 @@ export default function TimeCapsule() {
     e.stopPropagation();
     if (confirm("Hapus surat harapan ini?")) {
       saveLetters(letters.filter((l) => l.id !== id));
+      if (activeReadLetter?.id === id) setActiveReadLetter(null);
     }
   };
 
-  const getDaysRemaining = (targetDate: string) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  const daysRemaining = (targetDate: string) => {
     const target = new Date(targetDate);
+    const now = new Date();
     target.setHours(0, 0, 0, 0);
-    const diff = target.getTime() - today.getTime();
-    return Math.max(0, Math.ceil(diff / 86400000));
+    now.setHours(0, 0, 0, 0);
+    return Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   };
 
   const handleLetterClick = (letter: Letter) => {
-    const remaining = getDaysRemaining(letter.openDate);
+    const remaining = daysRemaining(letter.openDate);
     if (remaining > 0) {
-      // Shake animation to show locked status
       setShakeLetterId(letter.id);
       setTimeout(() => setShakeLetterId(null), 500);
     } else {
@@ -123,216 +120,220 @@ export default function TimeCapsule() {
   };
 
   return (
-    <div className="mx-5 mt-5 pb-4">
+    <div className="mx-4 sm:mx-5 mt-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <div>
-          <p className="font-display font-bold text-sm text-[#7A4A63]">Time Capsule Letter 🔒</p>
-          <p className="text-[10px] text-lilac-400 font-display">Simpan surat harapan untuk dibuka nanti</p>
+        <div className="flex items-center gap-2.5">
+          <IconBadge icon={Mail} tint="blush" size="sm" rounded="xl" />
+          <div>
+            <p className="font-display font-bold text-sm text-[#503043]">
+              Surat Harapan Waktu
+            </p>
+            <p className="text-[10px] text-[#7A4A63] font-display">
+              Terkunci hingga tanggal pembukaan tiba
+            </p>
+          </div>
         </div>
+
         <motion.button
-          whileTap={{ scale: 0.92 }}
+          whileTap={{ scale: 0.94 }}
           onClick={() => setShowAdd(true)}
-          className="flex items-center gap-1.5 bg-gradient-to-r from-blush-400 to-lilac-400 text-white text-[10px] font-display font-bold px-3 py-1.5 rounded-2xl shadow-soft"
+          className="flex items-center gap-1.5 bg-gradient-to-r from-blush-400 to-lilac-400 text-white text-[10px] font-display font-bold px-3 py-1.5 rounded-xl shadow-soft"
         >
-          <Plus size={12} /> Tulis Surat
+          <Plus size={13} /> Tulis Surat
         </motion.button>
       </div>
 
       {/* Letters List */}
       {letters.length === 0 ? (
-        <div className="bg-white/60 backdrop-blur-md rounded-3xl p-8 border border-white/60 text-center">
-          <p className="text-3xl mb-2">✉️</p>
-          <p className="font-display font-bold text-sm text-[#7A4A63]">Belum ada surat harapan</p>
-          <p className="text-[10px] text-lilac-400 mt-1">Buat surat pertama untuk dibuka di masa depan!</p>
+        <div className="bg-white/75 backdrop-blur-xl rounded-3xl p-6 border border-white/80 text-center shadow-[0_8px_30px_rgba(0,0,0,0.03)]">
+          <IconBadge icon={Mail} tint="blush" size="lg" rounded="2xl" className="mx-auto mb-2" />
+          <p className="font-display font-bold text-sm text-[#503043]">Belum ada surat harapan</p>
+          <p className="text-[10px] text-[#7A4A63] mt-1">
+            Tulis pesan cinta atau impian masa depan untuk dibuka nanti!
+          </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-2.5">
           {letters.map((letter) => {
-            const remaining = getDaysRemaining(letter.openDate);
+            const remaining = daysRemaining(letter.openDate);
             const isLocked = remaining > 0;
-            const style = THEMES[letter.theme];
-            const isShaking = shakeLetterId === letter.id;
+            const themeConfig = THEMES[letter.theme] || THEMES.pink;
 
             return (
-              <motion.button
+              <motion.div
                 key={letter.id}
-                onClick={() => handleLetterClick(letter)}
-                whileTap={{ scale: 0.95 }}
-                animate={isShaking ? { x: [-6, 6, -6, 6, 0] } : {}}
+                animate={shakeLetterId === letter.id ? { x: [-6, 6, -4, 4, 0] } : {}}
                 transition={{ duration: 0.4 }}
-                className={`relative rounded-3xl p-4 border text-left flex flex-col justify-between min-h-[140px] transition-all duration-300 ${style.bg} ${style.border} ${style.glow}`}
+                onClick={() => handleLetterClick(letter)}
+                className={`cursor-pointer rounded-2xl p-3.5 border backdrop-blur-md shadow-softer flex items-center justify-between transition-all hover:scale-[1.01] ${themeConfig.bg} ${themeConfig.border}`}
               >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl">✉️</span>
-                    <span className={`p-1 rounded-full ${style.headerBg} ${style.accent}`}>
-                      {isLocked ? <Lock size={12} /> : <Unlock size={12} className="animate-pulse" />}
-                    </span>
+                <div className="flex items-center gap-3 min-w-0 pr-2">
+                  <IconBadge
+                    icon={isLocked ? Lock : Unlock}
+                    tint={themeConfig.tint}
+                    size="sm"
+                    rounded="xl"
+                  />
+                  <div className="min-w-0">
+                    <p className="font-display font-bold text-xs text-[#503043] truncate">
+                      {letter.title}
+                    </p>
+                    <p className="text-[10px] text-[#7A4A63] flex items-center gap-1 mt-0.5">
+                      <Calendar size={10} />
+                      <span>Buka: {letter.openDate}</span>
+                    </p>
                   </div>
-                  <p className="font-display font-bold text-xs text-[#7A4A63] mt-2 truncate w-full">
-                    {letter.title}
-                  </p>
                 </div>
 
-                <div className="mt-3">
+                <div className="flex items-center gap-2 shrink-0">
                   {isLocked ? (
-                    <div>
-                      <p className="text-[10px] font-display font-bold text-[#8A5C74]/80">
-                        Buka dalam:
-                      </p>
-                      <p className={`text-[11px] font-display font-bold ${style.accent}`}>
-                        ⏳ {remaining} hari lagi
-                      </p>
-                    </div>
+                    <span className="text-[10px] font-bold text-blush-500 bg-white/80 px-2.5 py-1 rounded-xl border border-blush-100 flex items-center gap-1 shadow-softer">
+                      <Clock size={11} /> {remaining} hari lagi
+                    </span>
                   ) : (
-                    <div>
-                      <p className="text-[10px] font-display font-bold text-green-600 flex items-center gap-1">
-                        <Sparkles size={10} className="animate-spin" /> Siap dibuka!
-                      </p>
-                      <p className="text-[8px] text-lilac-400 font-display mt-0.5">Ketuk untuk membaca</p>
-                    </div>
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-100 flex items-center gap-1 shadow-softer">
+                      <Unlock size={11} /> Siap Dibaca!
+                    </span>
                   )}
-                </div>
 
-                {/* Delete option */}
-                <button
-                  onClick={(e) => handleDelete(letter.id, e)}
-                  className="absolute top-2 right-8 text-[9px] text-[#8A5C74]/40 hover:text-red-500 font-display font-semibold"
-                >
-                  Hapus
-                </button>
-              </motion.button>
+                  <button
+                    onClick={(e) => handleDelete(letter.id, e)}
+                    className="p-1.5 rounded-lg text-[#7A4A63]/50 hover:text-rose-500 hover:bg-white/60 transition-colors"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+              </motion.div>
             );
           })}
         </div>
       )}
 
-      {/* Write Letter Sheet */}
+      {/* Add Letter Modal */}
       <AnimatePresence>
         {showAdd && (
-          <>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-md">
             <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setShowAdd(false)}
-              className="fixed inset-0 bg-black/20 z-40"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl p-6 shadow-soft max-w-[420px] mx-auto"
+              initial={{ opacity: 0, scale: 0.94 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.94 }}
+              className="w-full max-w-sm bg-white/95 backdrop-blur-2xl rounded-3xl p-5 border border-white/80 shadow-2xl"
             >
-              <div className="flex items-center justify-between mb-4">
-                <p className="font-display font-bold text-sm text-[#7A4A63]">Tulis Surat Harapan 💌</p>
-                <button onClick={() => setShowAdd(false)}><X size={16} className="text-lilac-300" /></button>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <IconBadge icon={Mail} tint="blush" size="xs" rounded="md" />
+                  <p className="font-display font-bold text-sm text-[#503043]">
+                    Tulis Surat Harapan
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowAdd(false)}
+                  className="p-1 rounded-full text-[#7A4A63] hover:bg-blush-50"
+                >
+                  <X size={16} />
+                </button>
               </div>
 
-              {/* Theme Selector */}
-              <div className="flex gap-2.5 mb-3">
-                {Object.keys(THEMES).map((key) => {
-                  const tKey = key as keyof typeof THEMES;
-                  return (
-                    <button
-                      key={key}
-                      onClick={() => setTheme(tKey)}
-                      className={`flex-1 py-1.5 rounded-xl border text-[10px] font-display font-bold transition-all ${
-                        theme === tKey ? "bg-blush-100 border-blush-300" : "bg-blush-50/50 border-transparent"
-                      }`}
-                    >
-                      {key.charAt(0).toUpperCase() + key.slice(1)}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Judul Surat (misal: Harapan Ulang Tahun Kita)"
-                className="w-full rounded-2xl border border-blush-200 bg-blush-50 px-4 py-2.5 text-xs font-display font-semibold text-[#7A4A63] outline-none focus:border-blush-400 mb-2"
-              />
-
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Tuliskan semua kata-kata, doa, harapan, dan perasaanmu di sini..."
-                rows={4}
-                className="w-full rounded-2xl border border-blush-200 bg-blush-50 px-4 py-2.5 text-xs font-display font-medium text-[#7A4A63] outline-none focus:border-blush-400 mb-3 resize-none"
-              />
-
-              <div className="mb-4">
-                <label className="text-[10px] font-display font-bold text-lilac-400 block mb-1">
-                  Tanggal Buka Surat (Kapan boleh dibaca?):
-                </label>
+              <div className="space-y-3">
                 <input
-                  type="date"
-                  min={tomorrowStr()}
-                  value={openDate}
-                  onChange={(e) => setOpenDate(e.target.value)}
-                  className="w-full rounded-2xl border border-blush-200 bg-blush-50 px-4 py-2.5 text-xs font-display font-semibold text-[#7A4A63] outline-none focus:border-blush-400"
+                  type="text"
+                  placeholder="Judul surat harapan..."
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-2xl bg-white/80 border border-blush-100 text-xs font-display text-[#503043] outline-none focus:border-blush-400"
                 />
-              </div>
 
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                onClick={handleAdd}
-                disabled={!title.trim() || !content.trim() || !openDate}
-                className="w-full bg-gradient-to-r from-blush-400 to-lilac-400 text-white font-display font-bold text-sm py-3 rounded-2xl shadow-soft disabled:opacity-40"
-              >
-                Kunci & Simpan Surat 🔒
-              </motion.button>
+                <textarea
+                  rows={4}
+                  placeholder="Tuliskan harapan, pesan cinta, atau doa di masa depan..."
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  className="w-full p-3.5 rounded-2xl bg-white/80 border border-blush-100 text-xs font-display text-[#503043] outline-none focus:border-blush-400 resize-none leading-relaxed"
+                />
+
+                <div>
+                  <label className="text-[10px] font-display font-bold text-[#7A4A63] block mb-1">
+                    Tanggal Buka Surat (Terkunci hingga hari ini):
+                  </label>
+                  <input
+                    type="date"
+                    min={tomorrowStr()}
+                    value={openDate}
+                    onChange={(e) => setOpenDate(e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-blush-100 text-xs font-display text-[#503043] outline-none"
+                  />
+                </div>
+
+                {/* Theme Selector */}
+                <div>
+                  <label className="text-[10px] font-display font-bold text-[#7A4A63] block mb-1.5">
+                    Warna Kertas Surat:
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {(["pink", "purple", "mint", "cream"] as const).map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTheme(t)}
+                        className={`py-1.5 rounded-xl border text-[10px] font-bold capitalize transition-all ${
+                          theme === t ? "border-blush-400 shadow-softer bg-white font-black scale-105" : "bg-white/60 border-transparent"
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <motion.button
+                  whileTap={{ scale: 0.96 }}
+                  onClick={handleAdd}
+                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-blush-400 to-lilac-400 text-white font-display font-bold text-xs shadow-soft flex items-center justify-center gap-1.5 mt-2"
+                >
+                  <Lock size={14} /> Kunci &amp; Simpan Surat
+                </motion.button>
+              </div>
             </motion.div>
-          </>
+          </div>
         )}
       </AnimatePresence>
 
-      {/* Read Letter Modal Overlay */}
+      {/* Read Opened Letter Modal */}
       <AnimatePresence>
         {activeReadLetter && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/30 backdrop-blur-sm flex items-center justify-center p-5"
-          >
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md">
             <motion.div
-              initial={{ scale: 0.92, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.92, y: 20 }}
-              className={`w-full max-w-[380px] rounded-[2.5rem] p-6 shadow-2xl border flex flex-col justify-between max-h-[85vh] relative ${
-                THEMES[activeReadLetter.theme].bg
-              } ${THEMES[activeReadLetter.theme].border}`}
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              className="w-full max-w-sm bg-white/95 backdrop-blur-2xl rounded-3xl p-6 border border-white/80 shadow-2xl relative text-left"
             >
-              {/* Close Button */}
               <button
                 onClick={() => setActiveReadLetter(null)}
-                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/60 flex items-center justify-center shadow-soft text-[#7A4A63]"
+                className="absolute top-4 right-4 p-1 rounded-full text-[#7A4A63] hover:bg-blush-50"
               >
-                <X size={16} />
+                <X size={17} />
               </button>
 
-              <div className="flex-1 overflow-y-auto no-scrollbar pr-1 mt-4">
-                <div className="text-center mb-4">
-                  <span className="text-4xl">✉️🔓</span>
-                  <h2 className="font-display font-bold text-lg text-[#7A4A63] mt-2 leading-tight">
+              <div className="flex items-center gap-2 mb-3">
+                <IconBadge icon={Unlock} tint="rose" size="sm" rounded="xl" />
+                <div>
+                  <h3 className="font-display font-bold text-base text-[#503043]">
                     {activeReadLetter.title}
-                  </h2>
-                  <p className="text-[9px] text-[#8A5C74]/70 font-display mt-0.5">
-                    Ditulis pada: {new Date(activeReadLetter.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                  </h3>
+                  <p className="text-[10px] text-[#7A4A63]">
+                    Dibuka pada: {activeReadLetter.openDate}
                   </p>
                 </div>
-
-                <div className="bg-white/80 rounded-3xl p-5 border border-white/65 shadow-inner text-xs text-[#7A4A63] font-display whitespace-pre-wrap leading-relaxed">
-                  {activeReadLetter.content}
-                </div>
               </div>
 
-              <div className="mt-5 text-center">
-                <div className="inline-flex items-center gap-1 text-[10px] text-green-600 font-display font-bold bg-white/70 px-3 py-1 rounded-full border border-white/50">
-                  <Sparkles size={11} className="animate-pulse" /> Terbuka Sejak: {new Date(activeReadLetter.openDate).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
-                </div>
+              <div className="mt-4 p-4 rounded-2xl bg-gradient-to-br from-[#FFF5F8] to-[#FAF5FF] border border-blush-100/80 max-h-60 overflow-y-auto no-scrollbar">
+                <p className="text-xs text-[#503043] leading-relaxed whitespace-pre-line font-medium">
+                  {activeReadLetter.content}
+                </p>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>

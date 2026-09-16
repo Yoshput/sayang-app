@@ -23,7 +23,6 @@ export function loadProfile(): Profile | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Profile;
     if (!parsed.mode || !parsed.myName || !parsed.birthDate) return null;
-    // For couple mode, make sure new fields are loaded if present
     return parsed;
   } catch {
     return null;
@@ -41,6 +40,7 @@ export function clearProfile() {
 }
 
 export function daysTogether(anniversaryDate: string): number {
+  if (!anniversaryDate) return 0;
   const start = new Date(anniversaryDate);
   const today = new Date();
   start.setHours(0, 0, 0, 0);
@@ -48,7 +48,53 @@ export function daysTogether(anniversaryDate: string): number {
   return Math.max(0, Math.floor((today.getTime() - start.getTime()) / 86400000));
 }
 
+export type AnniversaryMilestone = {
+  days: number;
+  years: number;
+  months: number;
+  hours: number;
+  is2ndAnniversarySeason: boolean;
+  daysTo2Years: number;
+  isExact2Years: boolean;
+};
+
+export function getAnniversaryMilestone(anniversaryDate?: string): AnniversaryMilestone {
+  if (!anniversaryDate) {
+    return {
+      days: 0,
+      years: 0,
+      months: 0,
+      hours: 0,
+      is2ndAnniversarySeason: false,
+      daysTo2Years: 730,
+      isExact2Years: false,
+    };
+  }
+
+  const days = daysTogether(anniversaryDate);
+  const years = Math.floor(days / 365.25);
+  const months = Math.floor(days / 30.4375);
+  const hours = days * 24;
+
+  const targetDays = 730; // 2 years milestone
+  const daysTo2Years = Math.max(0, targetDays - days);
+  const isExact2Years = Math.abs(days - targetDays) <= 7;
+  // Season activates when approaching 2 years (e.g. >= 650 days) or on 2nd year and beyond
+  const is2ndAnniversarySeason = days >= 650;
+
+  return {
+    days,
+    years,
+    months,
+    hours,
+    is2ndAnniversarySeason,
+    daysTo2Years,
+    isExact2Years,
+  };
+}
+
 export function nextBirthdayCountdown(birthDate: string): { days: number; turning: number } {
+  if (!birthDate) return { days: 0, turning: 0 };
   const birth = new Date(birthDate);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -79,6 +125,7 @@ const ZODIAC: { name: string; emoji: string; from: [number, number]; to: [number
 ];
 
 export function getZodiac(birthDate: string): { name: string; emoji: string } {
+  if (!birthDate) return { name: "Bintang", emoji: "✨" };
   const d = new Date(birthDate);
   const month = d.getMonth() + 1;
   const day = d.getDate();
@@ -88,5 +135,5 @@ export function getZodiac(birthDate: string): { name: string; emoji: string } {
     if (month === to[0]) return day <= to[1];
     return false;
   });
-  return found ?? { name: "Rahasia", emoji: "✨" };
+  return found ?? { name: "Bintang", emoji: "✨" };
 }

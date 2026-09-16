@@ -3,27 +3,64 @@ export type MoodKey = "happy" | "sad" | "angry" | "cuddly" | "tired";
 export const MOODS: {
   key: MoodKey;
   label: string;
-  emoji: string;
+  iconName: string;
+  emoji: string; // backwards compatibility fallback
+  tint: "peach" | "blue" | "amber" | "rose" | "lilac";
   gradient: string;
 }[] = [
-  { key: "happy", label: "Senang", emoji: "😊", gradient: "from-[#FFE9F3] via-[#FFF6FA] to-[#FDF3D8]" },
-  { key: "sad", label: "Sedih", emoji: "😢", gradient: "from-[#E3E9FF] via-[#F1E7FE] to-[#FFF6FA]" },
-  { key: "angry", label: "Kesel", emoji: "😤", gradient: "from-[#FFD9D9] via-[#FFE9F3] to-[#FFF3E8]" },
-  { key: "cuddly", label: "Manja", emoji: "🥰", gradient: "from-[#FFE0EF] via-[#F1E7FE] to-[#FFF6FA]" },
-  { key: "tired", label: "Capek", emoji: "😴", gradient: "from-[#E3F2FF] via-[#EDEBFF] to-[#F6F0FF]" },
+  {
+    key: "happy",
+    label: "Senang",
+    iconName: "Smile",
+    emoji: "Smile",
+    tint: "peach",
+    gradient: "from-[#FFE9F3] via-[#FFF6FA] to-[#FDF3D8]",
+  },
+  {
+    key: "sad",
+    label: "Sedih",
+    iconName: "CloudRain",
+    emoji: "CloudRain",
+    tint: "blue",
+    gradient: "from-[#E3E9FF] via-[#F1E7FE] to-[#FFF6FA]",
+  },
+  {
+    key: "angry",
+    label: "Kesel",
+    iconName: "Flame",
+    emoji: "Flame",
+    tint: "amber",
+    gradient: "from-[#FFD9D9] via-[#FFE9F3] to-[#FFF3E8]",
+  },
+  {
+    key: "cuddly",
+    label: "Manja",
+    iconName: "Heart",
+    emoji: "Heart",
+    tint: "rose",
+    gradient: "from-[#FFE0EF] via-[#F1E7FE] to-[#FFF6FA]",
+  },
+  {
+    key: "tired",
+    label: "Capek",
+    iconName: "Moon",
+    emoji: "Moon",
+    tint: "lilac",
+    gradient: "from-[#E3F2FF] via-[#EDEBFF] to-[#F6F0FF]",
+  },
 ];
 
 export const FOOD_CATEGORIES = [
-  { label: "Pedas 🌶️", note: "Level nangis dikit gapapa" },
-  { label: "Manis 🍰", note: "Buat mood booster" },
-  { label: "Berkuah 🍲", note: "Anget-anget di perut" },
-  { label: "Fast Food 🍔", note: "Cepet, gampang, enak" },
-  { label: "Jepang 🍣", note: "Sushi atau ramen, bebas" },
-  { label: "Korea 🍜", note: "Tteokbokki time" },
-  { label: "Nasi Padang 🍛", note: "Rendang wajib" },
-  { label: "Seafood 🦐", note: "Bakar atau saus padang" },
-  { label: "Ayam Geprek 🍗", note: "Level sambel nego dulu" },
-  { label: "Kopi & Cemilan ☕", note: "Ga laper-laper amat" },
+  { label: "Pedas", iconName: "Flame", note: "Level nangis dikit gapapa" },
+  { label: "Manis", iconName: "Cake", note: "Buat mood booster" },
+  { label: "Berkuah", iconName: "Soup", note: "Anget-anget di perut" },
+  { label: "Fast Food", iconName: "Pizza", note: "Cepet, gampang, enak" },
+  { label: "Jepang", iconName: "Fish", note: "Sushi atau ramen, bebas" },
+  { label: "Korea", iconName: "Utensils", note: "Tteokbokki time" },
+  { label: "Nasi Padang", iconName: "UtensilsCrossed", note: "Rendang wajib" },
+  { label: "Seafood", iconName: "Fish", note: "Bakar atau saus padang" },
+  { label: "Ayam Geprek", iconName: "Drumstick", note: "Level sambel nego dulu" },
+  { label: "Kopi & Cemilan", iconName: "Coffee", note: "Ga laper-laper amat" },
 ];
 
 export const DEEP_TALK_QUESTIONS = [
@@ -42,12 +79,12 @@ export const DEEP_TALK_QUESTIONS = [
 ];
 
 export const CARE_OPTIONS = [
-  { key: "hug", label: "Perlu Dipeluk", emoji: "🤗", desc: "Peluk aku dulu, ga usah banyak tanya." },
-  { key: "listen", label: "Dengerin Aja", emoji: "👂", desc: "Aku cuma butuh cerita, jangan dikasih solusi dulu." },
-  { key: "space", label: "Kasih Jarak, Tapi Beliin Cemilan", emoji: "🛍️", desc: "Butuh waktu sendiri, tapi jangan lupa titip cemilan." },
-  { key: "distract", label: "Ajak Ngobrol Random", emoji: "💬", desc: "Alihin pikiran aku ke hal-hal receh." },
-  { key: "quiet", label: "Temenin Diem-Dieman", emoji: "🌙", desc: "Ga usah ngomong, cukup di samping aku aja." },
-  { key: "reassure", label: "Yakinin Aku", emoji: "💗", desc: "Bilang semua bakal baik-baik aja, ulang kalau perlu." },
+  { key: "hug", label: "Perlu Dipeluk", iconName: "Heart", emoji: "Heart", desc: "Peluk aku dulu, ga usah banyak tanya." },
+  { key: "listen", label: "Dengerin Aja", iconName: "Headphones", emoji: "Headphones", desc: "Aku cuma butuh cerita, jangan dikasih solusi dulu." },
+  { key: "space", label: "Beliin Cemilan", iconName: "ShoppingBag", emoji: "ShoppingBag", desc: "Butuh waktu sendiri, tapi jangan lupa titip cemilan." },
+  { key: "distract", label: "Ajak Ngobrol Random", iconName: "MessageCircle", emoji: "MessageCircle", desc: "Alihin pikiran aku ke hal-hal receh." },
+  { key: "quiet", label: "Temenin Tenang", iconName: "Moon", emoji: "Moon", desc: "Ga usah ngomong, cukup di samping aku aja." },
+  { key: "reassure", label: "Yakinin Aku", iconName: "ShieldCheck", emoji: "ShieldCheck", desc: "Bilang semua bakal baik-baik aja, ulang kalau perlu." },
 ];
 
 export const DATE_RECOMMENDATIONS: Record<
@@ -55,29 +92,29 @@ export const DATE_RECOMMENDATIONS: Record<
   { dateIdea: string; outfit: string[]; makeup: string }
 > = {
   happy: {
-    dateIdea: "Jalan-jalan santai ke kafe outdoor terus foto-foto golden hour 📸",
+    dateIdea: "Jalan-jalan santai ke kafe outdoor terus foto-foto saat golden hour",
     outfit: ["#FFD9E8", "#FFF3D0", "#FFFFFF"],
     makeup: "Fresh dewy look, blush peach, lip tint natural",
   },
   sad: {
-    dateIdea: "Movie night di rumah sambil peluk-pelukan dan makan comfort food 🎬",
+    dateIdea: "Movie night di rumah sambil peluk-pelukan dan makan comfort food",
     outfit: ["#E3E9FF", "#F1E7FE", "#F5F5F5"],
-    makeup: "Skip makeup, cukup skincare glowy + lip balm tinted",
+    makeup: "Skincare glowy minimalis dan lip balm tinted",
   },
   angry: {
-    dateIdea: "Karaoke teriak-teriak lepas emosi terus lanjut makan pedas 🎤",
+    dateIdea: "Karaoke lepas emosi bareng terus lanjut makan hidangan pedas favorit",
     outfit: ["#2B2B2B", "#FFD1E8", "#FFFFFF"],
-    makeup: "Bold red lip, sharp eyeliner, biar makin pede",
+    makeup: "Bold lip, sharp eyeliner, tampil makin percaya diri",
   },
   cuddly: {
-    dateIdea: "Piknik kecil di taman, bawa selimut dan snack favorit 🧺",
+    dateIdea: "Piknik santai di taman teduh, bawa selimut dan camilan manis favorit",
     outfit: ["#FFE0EF", "#F1E7FE", "#FFF8ED"],
-    makeup: "Soft pink everything, cheeks tint, glossy lip",
+    makeup: "Soft pink tint, glowing cheeks, glossy lip",
   },
   tired: {
-    dateIdea: "Spa/pijat santai berdua terus tidur cepet, no drama malam ini 🛁",
+    dateIdea: "Spa dan pijat refleksi santai berdua lalu istirahat awal tanpa distraksi",
     outfit: ["#DFF6E9", "#E3F2FF", "#FFFFFF"],
-    makeup: "Ga usah makeup, matching aja pake sheet mask bareng",
+    makeup: "Natural fresh look dengan sheet mask malam hari",
   },
 };
 
@@ -88,124 +125,124 @@ export const SELF_CARE_RECOMMENDATIONS: Record<
   { idea: string; outfit: string[]; tip: string }
 > = {
   happy: {
-    idea: "Bikin iced coffee favoritmu, dengerin lagu up-beat, dan beresin kamar sambil nari tipis-tipis 🎶",
+    idea: "Bikin iced coffee favoritmu, dengarkan playlist upbeat, dan nikmati harimu",
     outfit: ["#FFD9E8", "#FFF3D0", "#FFFFFF"],
-    tip: "Jangan lupa abadikan senyum serumu hari ini!",
+    tip: "Abadikan momen penuh senyum serumu hari ini!",
   },
   sad: {
-    idea: "Nonton film komedi/comfort movie hangat sambil selimutan dan minum teh anget ☕",
+    idea: "Tonton comfort movie hangat sambil selimutan dan nikmati teh hangat",
     outfit: ["#E3E9FF", "#F1E7FE", "#F5F5F5"],
-    tip: "It's okay to cry. Cuci muka pakai air dingin setelahnya ya.",
+    tip: "Menangis itu manusiawi. Basuh wajah dengan air dingin setelahnya.",
   },
   angry: {
-    idea: "Olahraga kardio, journaling coret-coret emosi, atau dengerin musik rock kencang-kencang 🎧",
+    idea: "Keluarkan energi lewat olahraga, journaling ekspresif, atau jalan santai",
     outfit: ["#2B2B2B", "#FFD1E8", "#FFFFFF"],
-    tip: "Tarik napas dalam 4 detik, tahan 7 detik, hembuskan 8 detik.",
+    tip: "Tarik napas dalam 4 detik, tahan 7 detik, hembuskan perlahan 8 detik.",
   },
   cuddly: {
-    idea: "Pakai piyama paling lembut, baca novel kesukaan, dan peluk bantal guling seharian 🧸",
+    idea: "Kenakan pakaian paling nyaman, baca novel favorit, dan manjakan diri",
     outfit: ["#FFE0EF", "#F1E7FE", "#FFF8ED"],
-    tip: "Manjakan dirimu dengan cemilan manis favorit.",
+    tip: "Nikmati camilan manis favorit tanpa rasa bersalah.",
   },
   tired: {
-    idea: "Mandi air hangat, pasang sheet mask dingin, lalu tidur lebih awal tanpa gadget 😴",
+    idea: "Mandi air hangat, pasang sheet mask, lalu tidur lebih awal tanpa gadget",
     outfit: ["#DFF6E9", "#E3F2FF", "#FFFFFF"],
-    tip: "Matikan semua notifikasi malam ini. Kamu berhak istirahat.",
+    tip: "Nonaktifkan notifikasi malam ini. Kamu pantas beristirahat tenang.",
   },
 };
 
 export const TREAT_YOURSELF_OPTIONS = [
-  { label: "Nonton Drakor", emoji: "🎬", note: "Pilih yang happy ending ya!" },
-  { label: "Skincare-an", emoji: "🧴", note: "Double cleanse, sheet mask, slay!" },
-  { label: "Beli Kopi Mahal", emoji: "☕", note: "Deserve it, bestie!" },
-  { label: "Jalan ke Toko Buku", emoji: "📚", note: "Beli satu, liat lainnya" },
-  { label: "Mandi Bubble Bath", emoji: "🛁", note: "Candle + playlist lo-fi 🕯️" },
-  { label: "Order Makanan Enak", emoji: "🍕", note: "Tanpa dihakimi siapapun" },
-  { label: "Tidur Seharian", emoji: "😴", note: "Rest is productive ✨" },
-  { label: "Karaoke Solo", emoji: "🎤", note: "Paling keras, paling lepas!" },
-  { label: "Belanja Online", emoji: "🛍️", note: "Add to cart dulu, bayarnya nanti" },
-  { label: "Masak Resep Baru", emoji: "🍳", note: "Gordon Ramsay siapa takut" },
-  { label: "Meditasi & Journaling", emoji: "🧘", note: "Mind reset yang berarti" },
-  { label: "Ke Salon", emoji: "💅", note: "Pamper yourself, sis!" },
+  { label: "Nonton Serial Favorit", iconName: "Film", emoji: "Film", note: "Pilih tontonan yang menghibur!" },
+  { label: "Skincare Rutin Lengkap", iconName: "Sparkles", emoji: "Sparkles", note: "Double cleanse, sheet mask, glow up!" },
+  { label: "Beli Kopi Favorit", iconName: "Coffee", emoji: "Coffee", note: "Self-reward terbaik hari ini" },
+  { label: "Mampir ke Toko Buku", iconName: "BookOpen", emoji: "BookOpen", note: "Pilih satu bacaan baru yang inspiratif" },
+  { label: "Mandi Air Hangat Santai", iconName: "Bath", emoji: "Bath", note: "Putar playlist santai pengantar relaksasi" },
+  { label: "Pesan Makanan Spesial", iconName: "Utensils", emoji: "Utensils", note: "Nikmati santapan enak kesukaanmu" },
+  { label: "Tidur Siang Berkualitas", iconName: "Moon", emoji: "Moon", note: "Istirahat adalah bentuk produktivitas" },
+  { label: "Dengarkan Musik Favorit", iconName: "Music", emoji: "Music", note: "Lepaskan beban dengan lagu kesukaan" },
+  { label: "Belanja Wishlist Pribadi", iconName: "ShoppingBag", emoji: "ShoppingBag", note: "Apresiasi kerja kerasmu selama ini" },
+  { label: "Coba Resep Masakan Baru", iconName: "ChefHat", emoji: "ChefHat", note: "Eksplorasi rasa baru di dapur" },
+  { label: "Meditasi & Journaling", iconName: "Compass", emoji: "Compass", note: "Jernihkan pikiran dan tata rencana baru" },
+  { label: "Perawatan Diri di Salon", iconName: "Scissors", emoji: "Scissors", note: "Manjakan diri agar kembali segar" },
 ];
 
 export const HABIT_ITEMS = [
-  { key: "water", label: "Minum 8 gelas air", emoji: "💧" },
-  { key: "sleep", label: "Tidur 7-8 jam", emoji: "😴" },
-  { key: "vitamins", label: "Minum vitamin", emoji: "💊" },
-  { key: "exercise", label: "Gerak / olahraga", emoji: "🏃" },
-  { key: "skincare", label: "Skincare rutin", emoji: "✨" },
-  { key: "journal", label: "Journaling", emoji: "📓" },
-  { key: "healthy_food", label: "Makan bergizi", emoji: "🥗" },
-  { key: "meditation", label: "Meditasi 5 menit", emoji: "🧘" },
+  { key: "water", label: "Minum 8 gelas air", iconName: "Droplets", emoji: "Droplets" },
+  { key: "sleep", label: "Tidur 7-8 jam", iconName: "Moon", emoji: "Moon" },
+  { key: "vitamins", label: "Minum vitamin", iconName: "Pill", emoji: "Pill" },
+  { key: "exercise", label: "Gerak / olahraga", iconName: "Footprints", emoji: "Footprints" },
+  { key: "skincare", label: "Skincare rutin", iconName: "Sparkles", emoji: "Sparkles" },
+  { key: "journal", label: "Journaling refleksi", iconName: "BookOpen", emoji: "BookOpen" },
+  { key: "healthy_food", label: "Makan bergizi", iconName: "Salad", emoji: "Salad" },
+  { key: "meditation", label: "Meditasi hening", iconName: "Wind", emoji: "Wind" },
 ] as const;
 
 export type HabitKey = typeof HABIT_ITEMS[number]["key"];
 
 // --- Mood-based Food Picker ---
-export type FoodItem = { name: string; emoji: string; category: string; note: string };
+export type FoodItem = { name: string; iconName: string; emoji: string; category: string; note: string };
 
 export const FOODS_BY_MOOD: Record<MoodKey, FoodItem[]> = {
   happy: [
-    { name: "Boba Brown Sugar", emoji: "🧋", category: "Minuman", note: "Bikin mood makin party!" },
-    { name: "Sushi Roll", emoji: "🍣", category: "Jepang", note: "Fresh vibes only~" },
-    { name: "Rainbow Salad Bowl", emoji: "🥗", category: "Sehat", note: "Colorful seperti harimu" },
-    { name: "Pancake Stack", emoji: "🥞", category: "Brunch", note: "Sirup maple wajib double" },
-    { name: "Pizza Party", emoji: "🍕", category: "Fast Food", note: "Pesan size XL dong" },
-    { name: "Ice Cream Sundae", emoji: "🍨", category: "Dessert", note: "3 scoop, kalori gak ngitung" },
-    { name: "Ayam Geprek Keju", emoji: "🍗", category: "Lokal", note: "Level dewa tapi worth it" },
-    { name: "Mie Goreng Special", emoji: "🍜", category: "Lokal", note: "Extra cabe, extra kebahagiaan" },
+    { name: "Boba Brown Sugar", iconName: "Coffee", emoji: "Coffee", category: "Minuman", note: "Segar dan manis melengkapi harimu" },
+    { name: "Sushi Platter Segar", iconName: "Fish", emoji: "Fish", category: "Jepang", note: "Fresh vibes untuk merayakan momen" },
+    { name: "Rainbow Salad Bowl", iconName: "Salad", emoji: "Salad", category: "Sehat", note: "Penuh warna dan nutrisi seimbang" },
+    { name: "Fluffy Pancake Stack", iconName: "Cake", emoji: "Cake", category: "Brunch", note: "Sirup maple dan butter melimpah" },
+    { name: "Artisan Pizza Slice", iconName: "Pizza", emoji: "Pizza", category: "Western", note: "Keju leleh yang memanjakan lidah" },
+    { name: "Ice Cream Gelato", iconName: "IceCream", emoji: "IceCream", category: "Dessert", note: "Rasa manis dingin pelepas penat" },
+    { name: "Ayam Geprek Mozzarella", iconName: "Drumstick", emoji: "Drumstick", category: "Lokal", note: "Sensasi pedas gurih yang pas" },
+    { name: "Mie Goreng Spesial", iconName: "Soup", emoji: "Soup", category: "Lokal", note: "Kelezatan klasik penghangat suasana" },
   ],
   sad: [
-    { name: "Ramen Tonkotsu", emoji: "🍜", category: "Jepang", note: "Soup anget buat hati" },
-    { name: "Nasi Goreng Telur", emoji: "🍳", category: "Comfort", note: "Masak sendiri pake cinta" },
-    { name: "Soto Ayam Hangat", emoji: "🍲", category: "Berkuah", note: "Kayak dipeluk dari dalam" },
-    { name: "Cokelat Hangat", emoji: "☕", category: "Minuman", note: "Full marshmallow ya" },
-    { name: "Mie Kuah Telor", emoji: "🍝", category: "Comfort", note: "Simple tapi healing" },
-    { name: "Pudding Cokelat", emoji: "🍮", category: "Dessert", note: "Manis untuk menemanimu" },
-    { name: "Bakso Kuah", emoji: "🍵", category: "Berkuah", note: "Order gede, habis sendiri" },
-    { name: "Toast Nutella", emoji: "🍞", category: "Snack", note: "Thick spread, no shame" },
+    { name: "Ramen Kaldu Hangat", iconName: "Soup", emoji: "Soup", category: "Jepang", note: "Kuah gurih hangat yang menenangkan" },
+    { name: "Nasi Goreng Telur Rumahan", iconName: "Utensils", emoji: "Utensils", category: "Comfort", note: "Sederhana tapi selalu menenangkan" },
+    { name: "Soto Ayam Kuah Bening", iconName: "Soup", emoji: "Soup", category: "Berkuah", note: "Menghangatkan tubuh dari dalam" },
+    { name: "Cokelat Panas Marshmallow", iconName: "Coffee", emoji: "Coffee", category: "Minuman", note: "Rasa manis lembut penghibur hati" },
+    { name: "Sup Krim Jagung Manis", iconName: "Soup", emoji: "Soup", category: "Comfort", note: "Tekstur creamy yang lembut" },
+    { name: "Pudding Cokelat Karamel", iconName: "Cake", emoji: "Cake", category: "Dessert", note: "Manis lembut penyejuk suasana" },
+    { name: "Bakso Kuah Sapi", iconName: "Soup", emoji: "Soup", category: "Berkuah", note: "Porsi mantap penyemangat hari" },
+    { name: "Toast Selai Nutella", iconName: "Sandwich", emoji: "Sandwich", category: "Snack", note: "Renyah manis teman bersantai" },
   ],
   angry: [
-    { name: "Ayam Geprek Level 10", emoji: "🌶️", category: "Pedas", note: "Buang emosi lewat pedas!" },
-    { name: "Tteokbokki Spicy", emoji: "🍢", category: "Korea", note: "Nangis dikit itu wajar" },
-    { name: "Kimchi Jjigae", emoji: "🫕", category: "Korea", note: "Fermentasi = pelepas emosi" },
-    { name: "Sambal Matah + Ikan", emoji: "🐟", category: "Pedas", note: "Makan sambil ngomel" },
-    { name: "Buldak Ramyeon", emoji: "🍜", category: "Pedas", note: "2x spicy challenge!" },
-    { name: "Karaoke + Gorengan", emoji: "🧆", category: "Snack", note: "Teriak dulu, makan kemudian" },
-    { name: "Nasi Padang Rendang", emoji: "🍛", category: "Lokal", note: "Rendang mengobati segalanya" },
-    { name: "Burger Double Patty", emoji: "🍔", category: "Fast Food", note: "Gigit sekuat tenaga" },
+    { name: "Ayam Geprek Sambal Korek", iconName: "Flame", emoji: "Flame", category: "Pedas", note: "Lepaskan beban lewat rasa pedas nendang" },
+    { name: "Spicy Tteokbokki", iconName: "Soup", emoji: "Soup", category: "Korea", note: "Sensasi pedas manis kenyal yang nagih" },
+    { name: "Kimchi Jjigae Panas", iconName: "Flame", emoji: "Flame", category: "Korea", note: "Segar dan pedas membersihkan penat" },
+    { name: "Sambal Matah Crispy", iconName: "Flame", emoji: "Flame", category: "Pedas", note: "Aroma segar pelecut semangat" },
+    { name: "Buldak Spicy Noodles", iconName: "Flame", emoji: "Flame", category: "Pedas", note: "Tantangan pedas pelepas emosi" },
+    { name: "Camilan Renyah Gurih", iconName: "Utensils", emoji: "Utensils", category: "Snack", note: "Kriuk renyah yang memuaskan" },
+    { name: "Nasi Padang Rendang Daging", iconName: "UtensilsCrossed", emoji: "UtensilsCrossed", category: "Lokal", note: "Bumbu kaya rempah yang memuaskan" },
+    { name: "Burger Double Patty", iconName: "Pizza", emoji: "Pizza", category: "Fast Food", note: "Porsi besar pengisi energi maksimal" },
   ],
   cuddly: [
-    { name: "Strawberry Latte", emoji: "🍓", category: "Minuman", note: "Pink & cute seperti kamu" },
-    { name: "Macaroon Mix", emoji: "🧁", category: "Dessert", note: "Warna-warni bikin gemes" },
-    { name: "Onigiri Isi Tuna", emoji: "🍙", category: "Jepang", note: "Imut banget kayak kamu" },
-    { name: "Crepe Buah Segar", emoji: "🥞", category: "Dessert", note: "Makan sambil peluk-pelukan" },
-    { name: "Dimsum Semua", emoji: "🥟", category: "Cina", note: "Order semua keranjangnya" },
-    { name: "Mochi Ice Cream", emoji: "🍡", category: "Dessert", note: "Lucu, kenyal, manis!" },
-    { name: "Waffle + Berry", emoji: "🧇", category: "Brunch", note: "Aesthetic banget" },
-    { name: "Croffles", emoji: "🥐", category: "Cafe", note: "Korean croissant waffle goals" },
+    { name: "Strawberry Milk Latte", iconName: "Coffee", emoji: "Coffee", category: "Minuman", note: "Manis lembut bernuansa merah muda" },
+    { name: "French Macarons", iconName: "Cookie", emoji: "Cookie", category: "Dessert", note: "Kecil, manis, dan elegan" },
+    { name: "Onigiri Salmon Mayo", iconName: "Fish", emoji: "Fish", category: "Jepang", note: "Praktis dan selalu lezat dinikmati" },
+    { name: "Crepe Buah Segar", iconName: "Cake", emoji: "Cake", category: "Dessert", note: "Manis segar teman quality time" },
+    { name: "Dimsum Kukus Campur", iconName: "Utensils", emoji: "Utensils", category: "Cina", note: "Lembut dan hangat saat disantap" },
+    { name: "Mochi Ice Cream Lembut", iconName: "IceCream", emoji: "IceCream", category: "Dessert", note: "Kenyal manis yang menggemaskan" },
+    { name: "Waffle Madu Beri", iconName: "Cake", emoji: "Cake", category: "Brunch", note: "Renyah berpadu saus manis buah" },
+    { name: "Butter Croffle Renyah", iconName: "Croissant", emoji: "Croissant", category: "Cafe", note: "Wangi mentega khas kafe favorit" },
   ],
   tired: [
-    { name: "Bubur Ayam Hangat", emoji: "🥣", category: "Comfort", note: "Simple, gampang, menyembuhkan" },
-    { name: "Oatmeal + Madu", emoji: "🫙", category: "Sehat", note: "Energi balik pelan-pelan" },
-    { name: "Delivery Nasi Goreng", emoji: "🍳", category: "Delivery", note: "Gojek aja, jangan masak" },
-    { name: "Smoothie Bowl", emoji: "🥤", category: "Sehat", note: "Nutrisi buat recharge" },
-    { name: "Indomie Rebus Telor", emoji: "🍜", category: "Comfort", note: "Life saver sejati" },
-    { name: "Sandwich Keju Panggang", emoji: "🥪", category: "Cepat", note: "3 menit udah jadi" },
-    { name: "Yogurt + Granola", emoji: "🍦", category: "Sehat", note: "Ringan tapi kenyang" },
-    { name: "Sup Tomat Hangat", emoji: "🍅", category: "Berkuah", note: "Anget = istirahat yang cukup" },
+    { name: "Bubur Ayam Gurih Hangat", iconName: "Soup", emoji: "Soup", category: "Comfort", note: "Mudah dicerna dan mengembalikan tenaga" },
+    { name: "Oatmeal Buah & Madu", iconName: "Apple", emoji: "Apple", category: "Sehat", note: "Sumber energi alami yang ringan" },
+    { name: "Nasi Goreng Simpel Cepat", iconName: "Utensils", emoji: "Utensils", category: "Cepat", note: "Langsung pesan tanpa repot masak" },
+    { name: "Fresh Smoothie Recharge", iconName: "Coffee", emoji: "Coffee", category: "Sehat", note: "Suntikan vitamin untuk tubuh lelah" },
+    { name: "Mie Kuah Telur Rebus", iconName: "Soup", emoji: "Soup", category: "Comfort", note: "Klasik, cepat, dan selalu pas" },
+    { name: "Sandwich Keju Panggang", iconName: "Sandwich", emoji: "Sandwich", category: "Cepat", note: "Tiga menit siap santap" },
+    { name: "Yogurt Granola Madu", iconName: "Apple", emoji: "Apple", category: "Sehat", note: "Ringan di perut sebelum istirahat" },
+    { name: "Sup Tomat Daging Cincang", iconName: "Soup", emoji: "Soup", category: "Berkuah", note: "Hangat kaya nutrisi penenang tubuh" },
   ],
 };
 
 // Partner status options for couple mode
 export const PARTNER_STATUSES = [
-  { key: "happy", label: "Lagi Bahagia 🥰", emoji: "🥰", color: "#F98FC2", bg: "#FFF2F9" },
-  { key: "pms", label: "PMS ⚠️", emoji: "⚠️", color: "#FF6B6B", bg: "#FFF0F0" },
-  { key: "gaming", label: "Nge-game 🎮", emoji: "🎮", color: "#7B68EE", bg: "#F0EEFF" },
-  { key: "busy", label: "Kerjaan Numpuk 💻", emoji: "💻", color: "#B58AF5", bg: "#F6EEFF" },
-  { key: "sleepy", label: "Ngantuk 😴", emoji: "😴", color: "#94DCB6", bg: "#F0FBF6" },
-  { key: "overthinking", label: "Overthinking 🌀", emoji: "🌀", color: "#FFA877", bg: "#FFF7F0" },
-  { key: "need_hug", label: "Butuh Pelukan 🤗", emoji: "🤗", color: "#FCAFD6", bg: "#FFF6FA" },
-  { key: "angry", label: "Lagi Kesel 😤", emoji: "😤", color: "#FF8E55", bg: "#FFF3EE" },
+  { key: "happy", label: "Lagi Bahagia", iconName: "Smile", emoji: "Smile", color: "#F98FC2", bg: "#FFF2F9" },
+  { key: "pms", label: "Periode PMS", iconName: "HeartPulse", emoji: "HeartPulse", color: "#FF6B6B", bg: "#FFF0F0" },
+  { key: "gaming", label: "Lagi Main Game", iconName: "Gamepad2", emoji: "Gamepad2", color: "#7B68EE", bg: "#F0EEFF" },
+  { key: "busy", label: "Fokus Kerja", iconName: "Laptop", emoji: "Laptop", color: "#B58AF5", bg: "#F6EEFF" },
+  { key: "sleepy", label: "Mengantuk", iconName: "Moon", emoji: "Moon", color: "#94DCB6", bg: "#F0FBF6" },
+  { key: "overthinking", label: "Butuh Ketenangan", iconName: "Compass", emoji: "Compass", color: "#FFA877", bg: "#FFF7F0" },
+  { key: "need_hug", label: "Butuh Pelukan", iconName: "HeartHandshake", emoji: "HeartHandshake", color: "#FCAFD6", bg: "#FFF6FA" },
+  { key: "angry", label: "Sedang Kesal", iconName: "Flame", emoji: "Flame", color: "#FF8E55", bg: "#FFF3EE" },
 ];

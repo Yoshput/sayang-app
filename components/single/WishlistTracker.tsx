@@ -2,23 +2,43 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, X, ShoppingBag, Target, Trash2 } from "lucide-react";
+import { Plus, X, ShoppingBag, Target, Trash2, CheckCircle } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
 
 interface WishItem {
   id: string;
   name: string;
   price: number;
   saved: number;
-  emoji: string;
+  iconName: string;
 }
 
 const STORAGE_KEY = "wishlist:items";
-const EMOJIS = ["👜", "👟", "💄", "📱", "✈️", "🎸", "📷", "🎮", "💍", "🌸", "📚", "🎧"];
+
+const ICON_OPTIONS = [
+  { iconName: "ShoppingBag", label: "Tas / Belanja" },
+  { iconName: "Sparkles", label: "Skincare / Make up" },
+  { iconName: "Smartphone", label: "Gadget" },
+  { iconName: "Plane", label: "Traveling" },
+  { iconName: "Music", label: "Alat Musik" },
+  { iconName: "Camera", label: "Fotografi" },
+  { iconName: "Gamepad2", label: "Gaming" },
+  { iconName: "Gift", label: "Hadiah" },
+  { iconName: "BookOpen", label: "Buku" },
+  { iconName: "Headphones", label: "Audio" },
+  { iconName: "Watch", label: "Aksesoris" },
+  { iconName: "Heart", label: "Spesial" },
+];
 
 function loadItems(): WishItem[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return parsed.map((it: any) => ({
+      ...it,
+      iconName: it.iconName || "ShoppingBag",
+    }));
   } catch {
     return [];
   }
@@ -33,7 +53,7 @@ export default function WishlistTracker() {
   const [showAdd, setShowAdd] = useState(false);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [emoji, setEmoji] = useState("👜");
+  const [selectedIcon, setSelectedIcon] = useState("ShoppingBag");
   const [addSavedFor, setAddSavedFor] = useState<string | null>(null);
   const [addAmount, setAddAmount] = useState("");
 
@@ -48,19 +68,20 @@ export default function WishlistTracker() {
       name: name.trim(),
       price: parseFloat(price),
       saved: 0,
-      emoji,
+      iconName: selectedIcon,
     };
     const updated = [...items, newItem];
     setItems(updated);
     saveItems(updated);
-    setName(""); setPrice(""); setEmoji("👜"); setShowAdd(false);
+    setName("");
+    setPrice("");
+    setSelectedIcon("ShoppingBag");
+    setShowAdd(false);
   };
 
   const addSavings = (id: string, amount: number) => {
     const updated = items.map((item) =>
-      item.id === id
-        ? { ...item, saved: Math.min(item.price, item.saved + amount) }
-        : item
+      item.id === id ? { ...item, saved: Math.min(item.price, item.saved + amount) } : item
     );
     setItems(updated);
     saveItems(updated);
@@ -68,198 +89,240 @@ export default function WishlistTracker() {
     setAddAmount("");
   };
 
-  const removeItem = (id: string) => {
-    const updated = items.filter((item) => item.id !== id);
+  const deleteItem = (id: string) => {
+    const updated = items.filter((i) => i.id !== id);
     setItems(updated);
     saveItems(updated);
   };
 
-  const formatK = (n: number) =>
-    n >= 1000000
-      ? `${(n / 1000000).toFixed(1)}jt`
-      : n >= 1000
-      ? `${(n / 1000).toFixed(0)}rb`
-      : `${n}`;
+  const totalTarget = items.reduce((acc, i) => acc + i.price, 0);
+  const totalSaved = items.reduce((acc, i) => acc + i.saved, 0);
+  const overallPct = totalTarget > 0 ? Math.round((totalSaved / totalTarget) * 100) : 0;
 
   return (
-    <div className="mx-5 mt-5 pb-4">
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <p className="font-display font-bold text-sm text-[#7A4A63]">Wishlist Goals 🛍️</p>
-          <p className="text-[10px] text-lilac-400 font-display">Nabung dikit-dikit, lama-lama kumpul ✨</p>
+    <div className="mx-4 sm:mx-5 mt-4 pb-6">
+      {/* Overview Card */}
+      <div className="bg-white/75 backdrop-blur-xl rounded-3xl p-4.5 border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.03)] mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2.5">
+            <IconBadge icon={ShoppingBag} tint="rose" size="sm" rounded="xl" />
+            <div>
+              <p className="font-display font-bold text-sm text-[#503043]">Wishlist Impian</p>
+              <p className="text-[10px] text-[#7A4A63] font-display">
+                {items.length === 0
+                  ? "Tabung impianmu satu per satu"
+                  : `${items.length} impian sedang diperjuangkan`}
+              </p>
+            </div>
+          </div>
+
+          <motion.button
+            whileTap={{ scale: 0.94 }}
+            onClick={() => setShowAdd(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blush-400 to-lilac-400 text-white font-display font-bold text-[10px] shadow-softer"
+          >
+            <Plus size={13} />
+            <span>Tambah</span>
+          </motion.button>
         </div>
-        <motion.button
-          whileTap={{ scale: 0.92 }}
-          onClick={() => setShowAdd(true)}
-          className="flex items-center gap-1.5 bg-gradient-to-r from-blush-400 to-lilac-400 text-white text-[10px] font-display font-bold px-3 py-1.5 rounded-2xl shadow-soft"
-        >
-          <Plus size={12} /> Tambah
-        </motion.button>
+
+        {/* Progress Bar */}
+        {items.length > 0 && (
+          <div>
+            <div className="flex justify-between text-[10px] font-display font-semibold text-[#7A4A63] mb-1.5">
+              <span>Terkumpul: Rp {totalSaved.toLocaleString("id-ID")}</span>
+              <span>{overallPct}%</span>
+            </div>
+            <div className="w-full h-2 bg-blush-100 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-blush-400 to-lilac-400 rounded-full"
+                animate={{ width: `${overallPct}%` }}
+                transition={{ duration: 0.5 }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Items list */}
+      {/* Add Item Modal / Drawer */}
+      <AnimatePresence>
+        {showAdd && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 15 }}
+            className="bg-white/90 backdrop-blur-xl rounded-3xl p-5 border border-blush-200/80 shadow-soft mb-4"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <p className="font-display font-bold text-xs text-[#503043]">
+                Tambah Wishlist Baru
+              </p>
+              <button
+                onClick={() => setShowAdd(false)}
+                className="p-1 rounded-full text-[#7A4A63] hover:bg-blush-50"
+              >
+                <X size={15} />
+              </button>
+            </div>
+
+            {/* Icon Picker */}
+            <p className="text-[10px] font-display font-bold text-[#7A4A63] uppercase tracking-wider mb-2">
+              Pilih Kategori Ikon:
+            </p>
+            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-3">
+              {ICON_OPTIONS.map((opt) => (
+                <button
+                  key={opt.iconName}
+                  onClick={() => setSelectedIcon(opt.iconName)}
+                  className={`p-1.5 rounded-xl border transition-all ${
+                    selectedIcon === opt.iconName
+                      ? "bg-blush-100 border-blush-400 scale-105"
+                      : "bg-white/70 border-white/60 hover:bg-white"
+                  }`}
+                >
+                  <IconBadge icon={opt.iconName} tint="rose" size="xs" rounded="md" />
+                </button>
+              ))}
+            </div>
+
+            {/* Form Fields */}
+            <div className="space-y-2.5">
+              <input
+                type="text"
+                placeholder="Nama barang / impian"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-2xl bg-white/80 border border-blush-100 text-xs font-display text-[#503043] focus:border-blush-400 outline-none"
+              />
+              <input
+                type="number"
+                placeholder="Target harga (Rp)"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-2xl bg-white/80 border border-blush-100 text-xs font-display text-[#503043] focus:border-blush-400 outline-none"
+              />
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                onClick={addItem}
+                className="w-full py-2.5 rounded-2xl bg-gradient-to-r from-blush-400 to-lilac-400 text-white font-display font-bold text-xs shadow-soft"
+              >
+                Simpan ke Wishlist
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Wishlist Items List */}
       {items.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="bg-white/60 backdrop-blur-md rounded-3xl p-8 border border-white/60 text-center"
-        >
-          <p className="text-3xl mb-2">🌸</p>
-          <p className="font-display font-bold text-sm text-[#7A4A63]">Belum ada wishlist</p>
-          <p className="text-[10px] text-lilac-400 mt-1">Tambah impian pertama kamu!</p>
-        </motion.div>
+        <div className="bg-white/60 backdrop-blur-md rounded-3xl p-8 border border-white/60 text-center">
+          <IconBadge icon={ShoppingBag} tint="rose" size="lg" rounded="2xl" className="mx-auto mb-2" />
+          <p className="font-display font-bold text-sm text-[#503043]">Wishlist masih kosong</p>
+          <p className="text-[10px] text-[#7A4A63] mt-1">Tambahkan barang impian yang ingin kamu wujudkan!</p>
+        </div>
       ) : (
         <div className="space-y-3">
-          {items.map((item, i) => {
+          {items.map((item) => {
             const pct = Math.round((item.saved / item.price) * 100);
-            const done = item.saved >= item.price;
+            const isCompleted = item.saved >= item.price;
+
             return (
-              <motion.div
+              <div
                 key={item.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className={`bg-white/70 backdrop-blur-md rounded-3xl p-4 border shadow-softer ${
-                  done ? "border-blush-200" : "border-white/60"
-                }`}
+                className="bg-white/75 backdrop-blur-xl rounded-3xl p-4 border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.03)]"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">{item.emoji}</span>
+                  <div className="flex items-center gap-3">
+                    <IconBadge icon={item.iconName} tint="rose" size="sm" rounded="xl" />
                     <div>
-                      <p className="font-display font-bold text-xs text-[#7A4A63]">{item.name}</p>
-                      <p className="text-[10px] text-lilac-400 font-display">
-                        {formatK(item.saved)} / Rp {formatK(item.price)}
+                      <p className="font-display font-bold text-xs text-[#503043]">{item.name}</p>
+                      <p className="text-[10px] text-[#7A4A63]">
+                        Target: Rp {item.price.toLocaleString("id-ID")}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    {done && <span className="text-sm">🎉</span>}
-                    <motion.button
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => removeItem(item.id)}
-                      className="w-6 h-6 rounded-full bg-blush-50 flex items-center justify-center"
-                    >
-                      <Trash2 size={11} className="text-blush-300" />
-                    </motion.button>
-                  </div>
+
+                  <button
+                    onClick={() => deleteItem(item.id)}
+                    className="p-1.5 rounded-full text-[#7A4A63]/50 hover:text-rose-500 hover:bg-rose-50 transition-colors"
+                  >
+                    <Trash2 size={13} />
+                  </button>
                 </div>
 
                 {/* Progress */}
-                <div className="h-2 bg-blush-50 rounded-full overflow-hidden mb-2">
-                  <motion.div
-                    className={`h-full rounded-full ${done ? "bg-gradient-to-r from-blush-400 to-lilac-400" : "bg-gradient-to-r from-blush-300 to-lilac-300"}`}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${pct}%` }}
-                    transition={{ duration: 0.7, ease: "easeOut" }}
-                  />
+                <div className="mt-2.5">
+                  <div className="flex justify-between text-[10px] font-display font-semibold text-[#7A4A63] mb-1">
+                    <span>Tersimpan: Rp {item.saved.toLocaleString("id-ID")}</span>
+                    <span>{pct}%</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-blush-100 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-blush-400 to-lilac-400 rounded-full"
+                      animate={{ width: `${Math.min(100, pct)}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-display font-bold text-lilac-400">{pct}% terkumpul</span>
-                  {!done && (
-                    addSavedFor === item.id ? (
-                      <div className="flex items-center gap-1">
-                        <input
-                          autoFocus
-                          value={addAmount}
-                          onChange={(e) => setAddAmount(e.target.value)}
-                          placeholder="nominal..."
-                          type="number"
-                          className="w-24 text-[10px] font-display font-bold px-2 py-1 rounded-xl border border-blush-200 bg-white outline-none text-[#7A4A63]"
-                        />
-                        <motion.button
-                          whileTap={{ scale: 0.92 }}
-                          onClick={() => addSavings(item.id, parseFloat(addAmount) || 0)}
-                          className="text-[10px] font-display font-bold px-2 py-1 rounded-xl bg-blush-400 text-white"
-                        >
-                          Simpan
-                        </motion.button>
-                        <button onClick={() => setAddSavedFor(null)} className="text-lilac-300">
-                          <X size={12} />
-                        </button>
-                      </div>
-                    ) : (
-                      <motion.button
-                        whileTap={{ scale: 0.92 }}
-                        onClick={() => setAddSavedFor(item.id)}
-                        className="text-[10px] font-display font-bold px-2.5 py-1 rounded-xl bg-lilac-100 text-lilac-500"
+
+                {/* Actions */}
+                <div className="mt-3 flex items-center justify-between pt-2 border-t border-blush-50">
+                  {isCompleted ? (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">
+                      <CheckCircle size={12} /> Impian Terwujud
+                    </span>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => addSavings(item.id, 50000)}
+                        className="text-[9px] font-bold font-display text-blush-500 bg-blush-50 px-2 py-1 rounded-lg border border-blush-100 hover:bg-blush-100"
                       >
-                        + Nabung
-                      </motion.button>
-                    )
+                        +50rb
+                      </button>
+                      <button
+                        onClick={() => addSavings(item.id, 100000)}
+                        className="text-[9px] font-bold font-display text-blush-500 bg-blush-50 px-2 py-1 rounded-lg border border-blush-100 hover:bg-blush-100"
+                      >
+                        +100rb
+                      </button>
+                    </div>
+                  )}
+
+                  {!isCompleted && (
+                    <button
+                      onClick={() => setAddSavedFor(addSavedFor === item.id ? null : item.id)}
+                      className="text-[10px] font-display font-bold text-lilac-500 hover:underline"
+                    >
+                      {addSavedFor === item.id ? "Batal" : "+ Nominal Lain"}
+                    </button>
                   )}
                 </div>
-              </motion.div>
+
+                {/* Custom Add Savings Field */}
+                {addSavedFor === item.id && (
+                  <div className="mt-2.5 flex gap-2">
+                    <input
+                      type="number"
+                      placeholder="Masukkan nominal (Rp)"
+                      value={addAmount}
+                      onChange={(e) => setAddAmount(e.target.value)}
+                      className="flex-1 px-3 py-1.5 rounded-xl bg-white border border-blush-100 text-[10px] font-display text-[#503043] outline-none"
+                    />
+                    <button
+                      onClick={() => {
+                        const val = parseFloat(addAmount);
+                        if (val > 0) addSavings(item.id, val);
+                      }}
+                      className="px-3 py-1.5 rounded-xl bg-blush-400 text-white font-display font-bold text-[10px] shadow-soft"
+                    >
+                      Tambah
+                    </button>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
       )}
-
-      {/* Add modal */}
-      <AnimatePresence>
-        {showAdd && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowAdd(false)}
-              className="fixed inset-0 bg-black/20 z-40"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 40 }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl p-6 shadow-soft max-w-[420px] mx-auto"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <p className="font-display font-bold text-sm text-[#7A4A63]">Tambah Wishlist</p>
-                <button onClick={() => setShowAdd(false)}>
-                  <X size={16} className="text-lilac-300" />
-                </button>
-              </div>
-
-              {/* Emoji picker */}
-              <div className="flex gap-2 mb-3 overflow-x-auto no-scrollbar pb-1">
-                {EMOJIS.map((e) => (
-                  <button
-                    key={e}
-                    onClick={() => setEmoji(e)}
-                    className={`text-xl w-9 h-9 rounded-xl shrink-0 flex items-center justify-center transition-all ${
-                      emoji === e ? "bg-blush-100 scale-110 shadow-softer" : "bg-blush-50"
-                    }`}
-                  >
-                    {e}
-                  </button>
-                ))}
-              </div>
-
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Nama barang / impian"
-                className="w-full rounded-2xl border border-blush-200 bg-blush-50 px-4 py-2.5 text-xs font-display font-semibold text-[#7A4A63] outline-none focus:border-blush-400 mb-2"
-              />
-              <input
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="Target harga (Rp)"
-                type="number"
-                className="w-full rounded-2xl border border-blush-200 bg-blush-50 px-4 py-2.5 text-xs font-display font-semibold text-[#7A4A63] outline-none focus:border-blush-400 mb-4"
-              />
-
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                onClick={addItem}
-                disabled={!name.trim() || !price}
-                className="w-full bg-gradient-to-r from-blush-400 to-lilac-400 text-white font-display font-bold text-sm py-3 rounded-2xl shadow-soft disabled:opacity-40"
-              >
-                Tambah ke Wishlist 🌸
-              </motion.button>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

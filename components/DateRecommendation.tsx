@@ -2,35 +2,42 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Palette, Wand2 } from "lucide-react";
+import { Sparkles, Palette, Wand2, Compass } from "lucide-react";
 import { MOODS, MoodKey, DATE_RECOMMENDATIONS } from "@/lib/data";
+import IconBadge from "@/components/ui/IconBadge";
 
 export default function DateRecommendation() {
   const [selected, setSelected] = useState<MoodKey>("happy");
   const reco = DATE_RECOMMENDATIONS[selected];
 
   return (
-    <div className="px-5 pt-6 pb-2">
-      <p className="font-display font-bold text-[#7A4A63] text-base flex items-center gap-1.5">
-        <Sparkles size={16} className="text-blush-400" /> Rekomendasi Date & Styling
-      </p>
-      <p className="text-xs text-lilac-500 mt-0.5">
-        Pilih mood kamu sekarang, aku kasih rekomendasinya
-      </p>
+    <div className="px-4 sm:px-5 pt-5 pb-2">
+      <div className="flex items-center gap-2.5 mb-1">
+        <IconBadge icon={Compass} tint="blush" size="sm" rounded="xl" />
+        <div>
+          <p className="font-display font-bold text-[#503043] text-base">
+            Rekomendasi Kencan &amp; Styling
+          </p>
+          <p className="text-xs text-[#7A4A63]">
+            Pilih mood hari ini untuk mendapatkan ide date dan panduan busana
+          </p>
+        </div>
+      </div>
 
-      <div className="flex gap-1.5 mt-3 overflow-x-auto no-scrollbar pb-1">
+      <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar pb-1">
         {MOODS.map((m) => (
           <motion.button
             key={m.key}
             onClick={() => setSelected(m.key)}
-            whileTap={{ scale: 0.92 }}
-            className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-display font-semibold whitespace-nowrap border ${
+            whileTap={{ scale: 0.94 }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-display font-semibold whitespace-nowrap border transition-all ${
               selected === m.key
-                ? "bg-blush-400 text-white border-blush-400"
-                : "bg-white/70 text-[#8A5C74] border-transparent"
+                ? "bg-white text-[#503043] font-bold border-blush-300 shadow-softer"
+                : "bg-white/60 text-[#7A4A63] border-white/70 hover:bg-white"
             }`}
           >
-            <span>{m.emoji}</span> {m.label}
+            <IconBadge icon={m.iconName} tint={m.tint} size="xs" rounded="md" />
+            <span>{m.label}</span>
           </motion.button>
         ))}
       </div>
@@ -42,35 +49,50 @@ export default function DateRecommendation() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.25 }}
-          className="mt-4 space-y-3"
+          className="mt-3.5 space-y-2.5"
         >
-          <div className="bg-white/80 rounded-3xl p-4 shadow-softer border border-blush-100">
-            <p className="text-[11px] font-display font-bold text-blush-400 flex items-center gap-1">
-              <Sparkles size={12} /> Ide Date
-            </p>
-            <p className="text-sm text-[#7A4A63] mt-1 leading-relaxed">{reco.dateIdea}</p>
-          </div>
-
-          <div className="bg-white/80 rounded-3xl p-4 shadow-softer border border-lilac-100">
-            <p className="text-[11px] font-display font-bold text-lilac-500 flex items-center gap-1">
-              <Palette size={12} /> Outfit Palette
-            </p>
-            <div className="flex gap-2 mt-2">
-              {reco.outfit.map((c) => (
-                <div
-                  key={c}
-                  className="w-9 h-9 rounded-2xl shadow-inner border border-white"
-                  style={{ backgroundColor: c }}
-                />
-              ))}
+          <div className="bg-white/75 backdrop-blur-xl rounded-3xl p-4 shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-white/80">
+            <div className="flex items-center gap-2 mb-1.5">
+              <IconBadge icon={Sparkles} tint="blush" size="xs" rounded="md" />
+              <p className="text-[10px] font-display font-bold text-blush-500 uppercase tracking-wider">
+                Ide Kencan Romantis
+              </p>
             </div>
+            <p className="text-xs text-[#503043] leading-relaxed font-semibold">
+              {reco.dateIdea}
+            </p>
           </div>
 
-          <div className="bg-white/80 rounded-3xl p-4 shadow-softer border border-mint-100">
-            <p className="text-[11px] font-display font-bold text-mint-500 flex items-center gap-1">
-              <Wand2 size={12} /> Makeup Look
-            </p>
-            <p className="text-sm text-[#3D6B54] mt-1 leading-relaxed">{reco.makeup}</p>
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="bg-white/75 backdrop-blur-xl rounded-3xl p-4 shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-white/80">
+              <div className="flex items-center gap-2 mb-2">
+                <IconBadge icon={Palette} tint="lilac" size="xs" rounded="md" />
+                <p className="text-[10px] font-display font-bold text-lilac-500 uppercase tracking-wider">
+                  Outfit Palette
+                </p>
+              </div>
+              <div className="flex gap-1.5 mt-1">
+                {reco.outfit.map((c) => (
+                  <div
+                    key={c}
+                    className="w-6 h-6 rounded-xl shadow-inner border border-white"
+                    style={{ backgroundColor: c }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white/75 backdrop-blur-xl rounded-3xl p-4 shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-white/80">
+              <div className="flex items-center gap-2 mb-1.5">
+                <IconBadge icon={Wand2} tint="rose" size="xs" rounded="md" />
+                <p className="text-[10px] font-display font-bold text-rose-500 uppercase tracking-wider">
+                  Makeup Look
+                </p>
+              </div>
+              <p className="text-[10px] text-[#503043] leading-relaxed font-medium">
+                {reco.makeup}
+              </p>
+            </div>
           </div>
         </motion.div>
       </AnimatePresence>

@@ -1,7 +1,18 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { Heart, Sparkles, Headphones, ShoppingBag, MessageCircle, Moon, ShieldCheck } from "lucide-react";
 import { CARE_OPTIONS } from "@/lib/data";
+import IconBadge from "@/components/ui/IconBadge";
+
+const ICON_MAP: Record<string, React.ElementType> = {
+  hug: Heart,
+  listen: Headphones,
+  space: ShoppingBag,
+  distract: MessageCircle,
+  quiet: Moon,
+  reassure: ShieldCheck,
+};
 
 export default function HandleWithCare({
   selected,
@@ -13,36 +24,50 @@ export default function HandleWithCare({
   const active = CARE_OPTIONS.find((c) => c.key === selected);
 
   return (
-    <div className="px-5 pt-6 pb-2">
-      <p className="font-display font-bold text-[#7A4A63] text-base">
-        Handle With Care 🎀
-      </p>
-      <p className="text-xs text-lilac-500 mt-0.5">
-        Pilih gimana kamu pengen diperlakukan hari ini
-      </p>
+    <div className="px-4 sm:px-5 pt-5 pb-3">
+      <div className="flex items-center gap-2.5 mb-1">
+        <IconBadge icon={Heart} tint="rose" size="sm" rounded="xl" />
+        <div>
+          <p className="font-display font-bold text-[#503043] text-base">
+            Handle With Care
+          </p>
+          <p className="text-xs text-[#7A4A63]">
+            Beri tahu pasangan perlakuan apa yang paling kamu butuhkan hari ini
+          </p>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-2 gap-2.5 mt-4">
+      <div className="grid grid-cols-2 gap-2.5 mt-3.5">
         {CARE_OPTIONS.map((opt, i) => {
           const isActive = selected === opt.key;
+          const IconComp = ICON_MAP[opt.key] || Heart;
+
           return (
             <motion.button
               key={opt.key}
               onClick={() => onSelect(opt.key)}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.05 }}
-              whileTap={{ scale: 0.93 }}
+              transition={{ delay: i * 0.04 }}
+              whileTap={{ scale: 0.94 }}
               whileHover={{ y: -2 }}
-              className={`text-left rounded-3xl p-3 border transition-colors ${
+              className={`text-left rounded-3xl p-3.5 border transition-all duration-200 flex items-start gap-2.5 ${
                 isActive
-                  ? "bg-blush-100 border-blush-300 shadow-soft"
-                  : "bg-white/70 border-transparent"
+                  ? "bg-white border-blush-300 shadow-soft scale-[1.02]"
+                  : "bg-white/70 border-white/80 hover:bg-white"
               }`}
             >
-              <span className="text-xl">{opt.emoji}</span>
-              <p className="font-display font-semibold text-xs text-[#7A4A63] mt-1 leading-snug">
-                {opt.label}
-              </p>
+              <IconBadge
+                icon={IconComp}
+                tint={isActive ? "rose" : "blush"}
+                size="sm"
+                rounded="xl"
+              />
+              <div className="min-w-0">
+                <p className="font-display font-semibold text-xs text-[#503043] leading-snug">
+                  {opt.label}
+                </p>
+              </div>
             </motion.button>
           );
         })}
@@ -55,10 +80,9 @@ export default function HandleWithCare({
             initial={{ opacity: 0, y: 10, height: 0 }}
             animate={{ opacity: 1, y: 0, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-4 bg-mint-100 border border-mint-200 rounded-2xl p-3 overflow-hidden"
+            className="mt-3.5 bg-mint-50 border border-mint-200/80 rounded-2xl p-3.5 overflow-hidden"
           >
-            <p className="text-xs text-[#3D6B54] leading-relaxed">
-              <span className="font-display font-bold">Catatan buat pasangan kamu:</span>{" "}
+            <p className="text-xs text-[#3D6B54] leading-relaxed font-medium">
               {active.desc}
             </p>
           </motion.div>

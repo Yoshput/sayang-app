@@ -45,34 +45,36 @@ export default function Home() {
       <div className="h-full w-full flex items-center justify-center bg-gradient-to-b from-[#FFF2F9] via-[#F6EEFF] to-[#EBF9F1]">
         <motion.span
           animate={{ scale: [1, 1.2, 1] }}
-          transition={{ repeat: Infinity, duration: 1 }}
-          className="text-5xl"
+          transition={{ repeat: Infinity, duration: 1.5 }}
+          className="text-4xl"
         >
-          💗
+          ❤️
         </motion.span>
       </div>
     );
   }
 
-  // Onboarding if no profile
-  if (!profile) return <OnboardingFlow />;
+  // Not onboarded yet
+  if (!profile) {
+    return <OnboardingFlow />;
+  }
 
   const isCouple = profile.mode === "couple";
-  const isSingle = profile.mode === "single";
 
-  // Gradient from active mood
   const activeGradient =
-    MOODS.find((m) => m.key === mood)?.gradient ??
-    (isCouple
+    mood
+      ? MOODS.find((m) => m.key === mood)?.gradient ??
+        (isCouple
+          ? "from-[#FFF2F9] via-[#F6EEFF] to-[#EBF9F1]"
+          : "from-[#FFF7F0] via-[#FFF0FF] to-[#F6EEFF]")
+      : isCouple
       ? "from-[#FFF2F9] via-[#F6EEFF] to-[#EBF9F1]"
-      : "from-[#FFF7F0] via-[#FFF0FF] to-[#F6EEFF]");
+      : "from-[#FFF7F0] via-[#FFF0FF] to-[#F6EEFF]";
 
-  // Handle bot tab - open overlay instead of tab switch
   const handleTabChange = (t: TabKey) => {
     if (t === "bot") {
       setShowBot(true);
     } else {
-      setShowBot(false);
       setTab(t);
     }
   };
@@ -105,15 +107,14 @@ export default function Home() {
                   transition={{ duration: 0.22 }}
                 >
                   <MoodTracker herName={profile.herName ?? "Dia"} mood={mood} onSelect={setMood} />
-                  <PartnerStatusBoard />
                   <AnniversaryCard
                     anniversaryDate={profile.anniversaryDate ?? ""}
                     birthDate={profile.birthDate}
                     partnerBirthDate={profile.partnerBirthDate}
                     partnerName={profile.herName}
                   />
-                  <TimeCapsule />
                   <PartnerStatusBoard />
+                  <TimeCapsule />
                   <FoodRoulette />
                   <HintDrop />
                   {mood && <DateRecommendation />}
@@ -160,7 +161,7 @@ export default function Home() {
       )}
 
       {/* === SINGLE MODE === */}
-      {isSingle && (
+      {!isCouple && (
         <>
           <div className="flex-1 overflow-y-auto no-scrollbar pb-28">
             <AnimatePresence mode="wait">
@@ -189,9 +190,9 @@ export default function Home() {
                   exit={{ opacity: 0, x: -12 }}
                   transition={{ duration: 0.22 }}
                 >
-                  <div className="pt-6 px-5 pb-2">
-                    <p className="text-[10px] font-bold text-lilac-500/80 tracking-wider uppercase">Daily Habits</p>
-                    <h2 className="font-display text-xl font-bold text-[#7A4A63]">Kebiasaan Sehatmu ✨</h2>
+                  <div className="pt-5 px-5 pb-1">
+                    <p className="text-[10px] font-bold text-blush-500 tracking-wider uppercase">Daily Habits</p>
+                    <h2 className="font-display text-lg font-bold text-[#503043]">Kebiasaan Sehatmu</h2>
                   </div>
                   <HabitTracker />
                 </motion.div>
@@ -204,9 +205,9 @@ export default function Home() {
                   exit={{ opacity: 0, x: -12 }}
                   transition={{ duration: 0.22 }}
                 >
-                  <div className="pt-6 px-5 pb-2">
-                    <p className="text-[10px] font-bold text-lilac-500/80 tracking-wider uppercase">Me-Time</p>
-                    <h2 className="font-display text-xl font-bold text-[#7A4A63]">Treat Yo' Self 🎉</h2>
+                  <div className="pt-5 px-5 pb-1">
+                    <p className="text-[10px] font-bold text-lilac-500 tracking-wider uppercase">Me-Time</p>
+                    <h2 className="font-display text-lg font-bold text-[#503043]">Treat Yourself</h2>
                   </div>
                   <TreatRoulette />
                 </motion.div>
@@ -219,9 +220,9 @@ export default function Home() {
                   exit={{ opacity: 0, x: -12 }}
                   transition={{ duration: 0.22 }}
                 >
-                  <div className="pt-6 px-5 pb-2">
-                    <p className="text-[10px] font-bold text-lilac-500/80 tracking-wider uppercase">Goals</p>
-                    <h2 className="font-display text-xl font-bold text-[#7A4A63]">Wishlist & Goals 🛍️</h2>
+                  <div className="pt-5 px-5 pb-1">
+                    <p className="text-[10px] font-bold text-rose-500 tracking-wider uppercase">Goals</p>
+                    <h2 className="font-display text-lg font-bold text-[#503043]">Wishlist &amp; Impian</h2>
                   </div>
                   <WishlistTracker />
                 </motion.div>
@@ -234,7 +235,18 @@ export default function Home() {
 
       {/* === ACABOT / SAYANG-BOT OVERLAY === */}
       <AnimatePresence>
-        {showBot && <AcabotChat onClose={() => setShowBot(false)} />}
+        {showBot && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/30 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 20 }}
+              className="w-full max-w-md h-[85vh] max-h-[700px] rounded-[36px] overflow-hidden shadow-2xl border border-white/80"
+            >
+              <AcabotChat onClose={() => setShowBot(false)} />
+            </motion.div>
+          </div>
+        )}
       </AnimatePresence>
     </div>
   );

@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, Bot, ChevronDown } from "lucide-react";
+import { X, Send, Bot, ChevronDown, Sparkles, Heart } from "lucide-react";
 import { useProfile } from "@/app/providers";
+import IconBadge from "@/components/ui/IconBadge";
 
 interface Message {
   role: "user" | "assistant";
@@ -16,16 +17,16 @@ interface AcabotChatProps {
 
 const QUICK_PROMPTS_COUPLE = [
   "Ide date yang seru minggu ini apa?",
-  "Kalau mau makan tapi beda selera, gimana?",
-  "Kasih aku kata-kata buat bikin dia senyum 💗",
-  "Gimana cara komunikasi yang lebih baik?",
+  "Kalau mau makan tapi beda selera, solusinya gimana?",
+  "Kasih kata-kata manis penyemangat buat dia",
+  "Gimana cara komunikasi yang lebih hangat dan terbuka?",
 ];
 
 const QUICK_PROMPTS_SINGLE = [
-  "Aku lagi overthinking, tolong tenangkan aku",
-  "Ide me-time yang seru buat hari ini?",
-  "Kasih aku quotes penyemangat dong 🌸",
-  "Aku lagi sedih, bisa cerita ga?",
+  "Aku lagi overthinking, tolong tenangkan pikiranku",
+  "Rekomendasi me-time yang bikin relaks hari ini",
+  "Beri aku motivasi untuk terus berkembang",
+  "Aku merasa lelah dan butuh ruang bercerita",
 ];
 
 export default function AcabotChat({ onClose }: AcabotChatProps) {
@@ -37,18 +38,16 @@ export default function AcabotChat({ onClose }: AcabotChatProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const isCouple = profile?.mode === "couple";
-  const botName = isCouple ? "Sayang-bot" : "Acabot";
-  const botEmoji = isCouple ? "💑" : "🤖";
+  const botName = isCouple ? "Sayang AI" : "Acabot AI";
   const quickPrompts = isCouple ? QUICK_PROMPTS_COUPLE : QUICK_PROMPTS_SINGLE;
 
-  // Greeting message on open
   useEffect(() => {
     const greeting = isCouple
-      ? `Haii ${profile?.myName ?? ""}! Aku Sayang-bot 💑 Butuh bantuan soal kalian berdua? Mau ide date, mediasi debat kecil, atau apapun — aku siap! 🌹`
-      : `Haii ${profile?.myName ?? ""}! Aku Acabot 🌸 Bestie virtual kamu yang selalu ada. Lagi gimana hari ini? Cerita aja ya, aku dengerin! 💗`;
+      ? `Halo ${profile?.myName ?? ""}! Aku ${botName}, asisten pendamping hubungan kalian. Mau cari ide kencan, cara mengungkapkan perasaan, atau tips komunikasi harmonis? Ceritakan padaku.`
+      : `Halo ${profile?.myName ?? ""}! Aku ${botName}, teman self-care virtualmu. Bagaimana harimu? Apapun yang sedang kamu rasakan, aku di sini siap mendengarkan.`;
 
     setMessages([{ role: "assistant", content: greeting }]);
-  }, [isCouple, profile?.myName]);
+  }, [isCouple, profile?.myName, botName]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -68,18 +67,22 @@ export default function AcabotChat({ onClose }: AcabotChatProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: newMessages,
-          mode: profile?.mode ?? "single",
-          myName: profile?.myName ?? "Kamu",
-          partnerName: profile?.herName ?? "",
+          messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
+          profile,
         }),
       });
+
+      if (!res.ok) throw new Error("Gagal menghubungi server");
+
       const data = await res.json();
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      setMessages([...newMessages, { role: "assistant", content: data.reply }]);
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Aduh aku error bentar 😅 Coba lagi ya!" },
+      setMessages([
+        ...newMessages,
+        {
+          role: "assistant",
+          content: "Koneksi sedang sedikit terhambat. Silakan coba kirim kembali pesanmu ya.",
+        },
       ]);
     } finally {
       setIsTyping(false);
@@ -87,134 +90,99 @@ export default function AcabotChat({ onClose }: AcabotChatProps) {
   };
 
   return (
-    <motion.div
-      initial={{ y: "100%", opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      exit={{ y: "100%", opacity: 0 }}
-      transition={{ type: "spring", stiffness: 320, damping: 32 }}
-      className="absolute inset-0 z-50 flex flex-col"
-      style={{
-        background: isCouple
-          ? "linear-gradient(160deg, #FFF2F9 0%, #F6EEFF 60%, #EBF9F1 100%)"
-          : "linear-gradient(160deg, #FFF7F0 0%, #FFF0FF 50%, #F6EEFF 100%)",
-      }}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-white/50">
-        <div className="flex items-center gap-3">
-          <div
-            className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl shadow-softer"
-            style={{ background: isCouple ? "#FFD1E8" : "#FFE0FF" }}
-          >
-            {botEmoji}
-          </div>
+    <div className="flex flex-col h-full bg-[#FFF8FB]">
+      {/* iOS App Header */}
+      <div className="flex items-center justify-between px-5 py-3.5 bg-white/85 backdrop-blur-xl border-b border-blush-100/80 shrink-0">
+        <div className="flex items-center gap-2.5">
+          <IconBadge icon={isCouple ? Heart : Bot} tint="rose" size="sm" rounded="xl" />
           <div>
-            <p className="font-display font-bold text-sm text-[#7A4A63]">{botName}</p>
+            <p className="font-display font-bold text-xs text-[#503043]">{botName}</p>
             <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              <p className="text-[10px] text-lilac-400 font-display">Online • AI powered ✨</p>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] text-emerald-600 font-medium">Aktif • Gemini 2.5</span>
             </div>
           </div>
         </div>
-        <motion.button
-          whileTap={{ scale: 0.9 }}
+
+        <button
           onClick={onClose}
-          className="w-8 h-8 rounded-full bg-white/70 backdrop-blur flex items-center justify-center shadow-softer"
+          className="p-1.5 rounded-full text-[#7A4A63] hover:bg-blush-50 transition-colors"
         >
-          <ChevronDown size={18} className="text-lilac-400" />
-        </motion.button>
+          <X size={17} />
+        </button>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto no-scrollbar px-4 py-4 space-y-3">
-        {messages.map((msg, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+      {/* Messages Scroll Area */}
+      <div className="flex-1 overflow-y-auto no-scrollbar p-4 space-y-3">
+        {messages.map((m, i) => (
+          <div
+            key={i}
+            className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
           >
-            {msg.role === "assistant" && (
-              <div className="w-7 h-7 rounded-xl bg-blush-100 flex items-center justify-center text-sm mr-2 shrink-0 mt-1">
-                {botEmoji}
-              </div>
-            )}
             <div
-              className={`max-w-[78%] px-4 py-2.5 rounded-3xl text-xs font-display leading-relaxed shadow-softer ${
-                msg.role === "user"
-                  ? "bg-gradient-to-br from-blush-400 to-lilac-400 text-white rounded-br-sm"
-                  : "bg-white/80 backdrop-blur text-[#7A4A63] rounded-bl-sm border border-white/60"
+              className={`max-w-[82%] px-4 py-2.5 rounded-2xl text-xs font-display leading-relaxed shadow-softer ${
+                m.role === "user"
+                  ? "bg-gradient-to-r from-blush-400 to-lilac-400 text-white rounded-br-none"
+                  : "bg-white border border-blush-100/70 text-[#503043] rounded-bl-none"
               }`}
             >
-              {msg.content}
+              {m.content}
             </div>
-          </motion.div>
+          </div>
         ))}
 
-        {/* Typing indicator */}
         {isTyping && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-end gap-2"
-          >
-            <div className="w-7 h-7 rounded-xl bg-blush-100 flex items-center justify-center text-sm shrink-0">
-              {botEmoji}
+          <div className="flex justify-start">
+            <div className="bg-white border border-blush-100 px-4 py-2.5 rounded-2xl rounded-bl-none shadow-softer flex gap-1 items-center">
+              <span className="w-1.5 h-1.5 rounded-full bg-blush-400 animate-bounce" />
+              <span className="w-1.5 h-1.5 rounded-full bg-blush-400 animate-bounce [animation-delay:0.15s]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-blush-400 animate-bounce [animation-delay:0.3s]" />
             </div>
-            <div className="bg-white/80 backdrop-blur border border-white/60 rounded-3xl rounded-bl-sm px-4 py-3 flex gap-1 shadow-softer">
-              {[0, 1, 2].map((i) => (
-                <span
-                  key={i}
-                  className="w-1.5 h-1.5 rounded-full bg-blush-400 typing-dot inline-block"
-                  style={{ animationDelay: `${i * 0.2}s` }}
-                />
-              ))}
-            </div>
-          </motion.div>
+          </div>
         )}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick prompts */}
-      {messages.length <= 1 && (
-        <div className="px-4 pb-2">
-          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-            {quickPrompts.map((p) => (
-              <motion.button
-                key={p}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => sendMessage(p)}
-                className="shrink-0 text-[10px] font-display font-bold px-3 py-1.5 rounded-full bg-white/70 border border-blush-200 text-[#7A4A63] shadow-softer"
-              >
-                {p}
-              </motion.button>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Quick Prompts */}
+      <div className="px-4 py-1.5 flex gap-1.5 overflow-x-auto no-scrollbar shrink-0">
+        {quickPrompts.map((q) => (
+          <button
+            key={q}
+            onClick={() => sendMessage(q)}
+            className="text-[10px] font-display font-medium text-[#7A4A63] bg-white/80 border border-blush-100 px-3 py-1 rounded-xl whitespace-nowrap hover:bg-blush-50 transition-all shadow-softer"
+          >
+            {q}
+          </button>
+        ))}
+      </div>
 
-      {/* Input bar */}
-      <div className="px-4 pb-5 pt-2">
-        <div className="flex items-center gap-2 bg-white/80 backdrop-blur rounded-3xl border border-white/60 shadow-softer px-3 py-2">
+      {/* Input Field */}
+      <div className="p-3 bg-white/90 backdrop-blur-xl border-t border-blush-100/70 shrink-0">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            sendMessage(input);
+          }}
+          className="flex items-center gap-2"
+        >
           <input
             ref={inputRef}
+            type="text"
+            placeholder="Ketik pesanmu di sini..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
-            placeholder={isCouple ? "Tanya Sayang-bot..." : "Cerita ke Acabot..."}
-            className="flex-1 bg-transparent outline-none text-xs font-display text-[#7A4A63] placeholder:text-lilac-300"
+            className="flex-1 px-4 py-2.5 rounded-2xl bg-blush-50/60 border border-blush-100 text-xs font-display text-[#503043] focus:border-blush-300 outline-none"
           />
           <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={() => sendMessage(input)}
+            type="submit"
+            whileTap={{ scale: 0.92 }}
             disabled={!input.trim() || isTyping}
-            className="w-8 h-8 rounded-2xl bg-gradient-to-br from-blush-400 to-lilac-400 flex items-center justify-center disabled:opacity-40 shadow-soft"
+            className="p-2.5 rounded-2xl bg-gradient-to-r from-blush-400 to-lilac-400 text-white shadow-soft disabled:opacity-50"
           >
-            <Send size={14} className="text-white" />
+            <Send size={15} />
           </motion.button>
-        </div>
+        </form>
       </div>
-    </motion.div>
+    </div>
   );
 }

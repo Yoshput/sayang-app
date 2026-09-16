@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, HeartHandshake, Smile, X } from "lucide-react";
 import { PARTNER_STATUSES } from "@/lib/data";
 import { useProfile } from "@/app/providers";
+import IconBadge from "@/components/ui/IconBadge";
 
 const STORAGE_KEY = "partner:status";
 
@@ -59,121 +60,143 @@ export default function PartnerStatusBoard() {
     <motion.button
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className="flex-1 bg-white/60 backdrop-blur-md rounded-3xl p-4 border border-white/60 shadow-softer text-left relative overflow-hidden min-h-[110px] flex flex-col justify-between"
-      style={statusData ? { background: statusData.bg + "cc" } : {}}
+      className="flex-1 bg-white/75 backdrop-blur-xl rounded-3xl p-4 border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.03)] text-left relative overflow-hidden min-h-[115px] flex flex-col justify-between transition-all"
     >
-      {statusData && (
-        <div
-          className="absolute -right-6 -bottom-6 w-20 h-20 rounded-full blur-2xl opacity-40"
-          style={{ background: statusData.color }}
-        />
-      )}
       <div>
-        <p className="text-[10px] font-display font-bold text-[#8A5C74] uppercase tracking-wide">
+        <p className="text-[10px] font-display font-bold text-blush-500 uppercase tracking-wider">
           {label}
         </p>
-        <p className="text-xs font-display font-bold text-[#7A4A63] mt-0.5 truncate">{name}</p>
+        <p className="text-xs font-display font-bold text-[#503043] mt-0.5 truncate">{name}</p>
       </div>
-      <div>
+
+      <div className="mt-2 flex items-center justify-between">
         {statusData ? (
-          <div>
-            <p className="text-2xl mb-1">{statusData.emoji}</p>
-            <p className="text-[11px] font-display font-bold text-[#7A4A63] leading-tight">
-              {statusData.label}
-            </p>
+          <div className="flex items-center gap-2">
+            <IconBadge icon={statusData.iconName} tint="blush" size="sm" rounded="xl" />
+            <div>
+              <p className="font-display font-bold text-xs text-[#503043] leading-tight">
+                {statusData.label}
+              </p>
+              <span className="text-[9px] text-[#7A4A63] font-medium">Klik ubah</span>
+            </div>
           </div>
         ) : (
-          <div className="flex items-center gap-1 text-lilac-300">
-            <p className="text-xs font-display font-semibold">Set status</p>
-            <ChevronDown size={12} />
+          <div className="flex items-center gap-2 text-[#7A4A63]/60">
+            <div className="w-8 h-8 rounded-xl bg-white/60 border border-white flex items-center justify-center">
+              <ChevronDown size={14} />
+            </div>
+            <span className="text-[11px] font-display font-medium">Pilih status...</span>
           </div>
         )}
       </div>
     </motion.button>
   );
 
-  const StatusPicker = ({
-    title,
-    onSelect,
-    onClose,
-  }: {
-    title: string;
-    onSelect: (key: string) => void;
-    onClose: () => void;
-  }) => (
-    <>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-        className="fixed inset-0 bg-black/20 z-40"
-      />
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 40 }}
-        className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl p-6 shadow-soft max-w-[420px] mx-auto"
-      >
-        <p className="font-display font-bold text-sm text-[#7A4A63] mb-4">{title}</p>
-        <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto no-scrollbar">
-          {PARTNER_STATUSES.map((s) => (
-            <motion.button
-              key={s.key}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => onSelect(s.key)}
-              className="flex items-center gap-2 p-3 rounded-2xl border text-left"
-              style={{ background: s.bg, borderColor: s.color + "44" }}
-            >
-              <span className="text-xl">{s.emoji}</span>
-              <span className="text-[11px] font-display font-bold text-[#7A4A63] leading-tight">
-                {s.label}
-              </span>
-            </motion.button>
-          ))}
-        </div>
-      </motion.div>
-    </>
-  );
-
   return (
-    <div className="mx-5 mt-5">
-      <div className="mb-2">
-        <p className="font-display font-bold text-sm text-[#7A4A63]">Status Kalian 📡</p>
-        <p className="text-[10px] text-lilac-400 font-display">Biar tau kondisi masing-masing</p>
+    <div className="mx-4 sm:mx-5 mt-4">
+      {/* Title */}
+      <div className="flex items-center gap-2 mb-2.5">
+        <IconBadge icon={HeartHandshake} tint="blush" size="xs" rounded="md" />
+        <p className="text-[11px] font-display font-bold text-[#7A4A63] uppercase tracking-wider">
+          Status Pasangan Realtime
+        </p>
       </div>
 
+      {/* Cards */}
       <div className="flex gap-3">
         <StatusCard
-          label="Status kamu"
+          label="Status Aku"
+          name={profile?.myName ?? "Kamu"}
           statusData={myStatusData}
           onClick={() => setShowMyPicker(true)}
-          name={profile?.myName ?? "Kamu"}
         />
         <StatusCard
-          label="Status dia"
+          label={`Status ${profile?.herName ?? "Dia"}`}
+          name={profile?.herName ?? "Dia"}
           statusData={partnerStatusData}
           onClick={() => setShowPartnerPicker(true)}
-          name={profile?.herName ?? "Dia"}
         />
       </div>
 
+      {/* Picker Modal (My Status) */}
       <AnimatePresence>
         {showMyPicker && (
-          <StatusPicker
-            title={`Status ${profile?.myName ?? "kamu"} lagi...`}
+          <PickerModal
+            title="Update Status Kamu"
+            current={myStatus}
             onSelect={selectMy}
             onClose={() => setShowMyPicker(false)}
           />
         )}
+      </AnimatePresence>
+
+      {/* Picker Modal (Partner Status) */}
+      <AnimatePresence>
         {showPartnerPicker && (
-          <StatusPicker
-            title={`Status ${profile?.herName ?? "dia"} lagi...`}
+          <PickerModal
+            title={`Update Status ${profile?.herName ?? "Dia"}`}
+            current={partnerStatus}
             onSelect={selectPartner}
             onClose={() => setShowPartnerPicker(false)}
           />
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+function PickerModal({
+  title,
+  current,
+  onSelect,
+  onClose,
+}: {
+  title: string;
+  current: string | null;
+  onSelect: (key: string) => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-md">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.94 }}
+        className="w-full max-w-sm bg-white/95 backdrop-blur-2xl rounded-3xl p-5 border border-white/80 shadow-2xl"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <p className="font-display font-bold text-sm text-[#503043]">{title}</p>
+          <button
+            onClick={onClose}
+            className="p-1 rounded-full text-[#7A4A63] hover:bg-blush-50"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          {PARTNER_STATUSES.map((s) => {
+            const isSelected = current === s.key;
+            return (
+              <motion.button
+                key={s.key}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => onSelect(s.key)}
+                className={`flex items-center gap-2 p-2.5 rounded-2xl border text-left transition-all ${
+                  isSelected
+                    ? "bg-blush-50 border-blush-300 shadow-softer"
+                    : "bg-white/70 border-white/60 hover:bg-white"
+                }`}
+              >
+                <IconBadge icon={s.iconName} tint="blush" size="xs" rounded="lg" />
+                <span className="font-display font-semibold text-[11px] text-[#503043] truncate">
+                  {s.label}
+                </span>
+              </motion.button>
+            );
+          })}
+        </div>
+      </motion.div>
     </div>
   );
 }

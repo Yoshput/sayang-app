@@ -1,17 +1,20 @@
 "use client";
 
+import React from "react";
 import dynamic from "next/dynamic";
 import { useProfile } from "@/app/providers";
 import LandingPanel from "@/components/LandingPanel";
+import IPhone17ProMaxMockup from "@/components/mockup/IPhone17ProMaxMockup";
 
-// Canvas loaded client-only
+// Canvas loaded client-only for background performance
 const LandingCanvas = dynamic(() => import("@/components/LandingCanvas"), { ssr: false });
 
 /**
- * AppShell handles the responsive layout:
- * - Mobile + logged in  → app frame fills 100dvh, no landing, no padding
- * - Mobile + not logged → landing page scrolls above app frame with 3D canvas bg
- * - Desktop            → side-by-side layout with canvas bg always
+ * AppShell: Apple HIG Responsive Engine
+ * - Mobile + Logged In: Native 100dvh edge-to-edge iOS experience (zero borders, smooth inertia scroll).
+ * - Desktop + Logged In: Full responsive Apple iPad / macOS Catalyst styled dashboard (centered, comfortable, crystal-clear readability).
+ * - Desktop + Not Logged In: Split showcase with 3D Landing Panel on left & iPhone 17 Pro Max Titanium mockup on right.
+ * - Mobile + Not Logged In: Fluid mobile landing that smoothly flows into the onboarding screen.
  */
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const { profile, ready } = useProfile();
@@ -20,40 +23,42 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   if (isLoggedIn) {
     return (
       <>
-        {/* Mobile: pure full-screen app, no landing */}
+        {/* Mobile Viewport: 100% Native Edge-to-Edge Experience */}
         <div className="lg:hidden w-full h-[100dvh] bg-[#FFF8FB] overflow-hidden flex flex-col">
           {children}
         </div>
 
-        {/* Desktop: side-by-side with landing + canvas bg */}
-        <div className="hidden lg:flex relative w-full justify-center items-center min-h-[100dvh] bg-gradient-to-b from-[#FDE7F3] via-[#F3ECFF] to-[#E9F7EF] py-10 px-6 overflow-hidden">
+        {/* Desktop / Laptop / PC Viewport: Spacious Responsive Apple Catalyst Experience */}
+        <div className="hidden lg:flex relative w-full justify-center items-center min-h-[100dvh] bg-gradient-to-b from-[#FDE7F3] via-[#F3ECFF] to-[#E9F7EF] py-8 px-6 overflow-hidden">
+          {/* Ambient Canvas Particles */}
           <LandingCanvas />
-          <div className="relative z-10 flex flex-row items-center justify-center gap-16 max-w-7xl w-full mx-auto">
-            <LandingPanel />
-            <div className="relative h-[850px] max-w-[420px] w-full rounded-[3rem] shadow-2xl border-[10px] border-white bg-[#FFF8FB] overflow-hidden flex flex-col shrink-0">
-              {children}
-            </div>
+
+          {/* Centered Responsive App Window */}
+          <div className="relative z-10 w-full max-w-xl h-[92vh] rounded-[36px] shadow-[0_20px_60px_rgba(244,114,182,0.22),0_4px_20px_rgba(0,0,0,0.04)] border-[6px] border-white/80 bg-[#FFF8FB] overflow-hidden flex flex-col transition-all duration-300">
+            {children}
           </div>
         </div>
       </>
     );
   }
 
-  // Not logged in: scrollable landing + canvas bg + app frame
+  // Not logged in: Show Landing Showcase + iPhone 17 Pro Max Hardware Mockup
   return (
     <div className="relative min-h-[100dvh] w-full flex justify-center items-start lg:items-center bg-gradient-to-b from-[#FDE7F3] via-[#F3ECFF] to-[#E9F7EF] lg:py-10 px-0 lg:px-6 overflow-y-auto scroll-smooth">
-      {/* Interactive canvas background — desktop only for perf */}
+      {/* Interactive canvas background on desktop */}
       <div className="hidden lg:block absolute inset-0 pointer-events-none">
         <LandingCanvas />
       </div>
 
-      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 max-w-7xl w-full mx-auto py-10 lg:py-0">
+      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-14 max-w-7xl w-full mx-auto py-8 lg:py-0 px-4 sm:px-6">
+        {/* Left Side: 3D Animated Landing Panel */}
         <LandingPanel />
-        <div
-          id="app-frame"
-          className="relative w-full h-[100dvh] sm:h-[850px] sm:max-w-[420px] sm:rounded-[3rem] sm:shadow-2xl sm:border-[10px] sm:border-white bg-[#FFF8FB] overflow-hidden flex flex-col shrink-0 scroll-mt-4"
-        >
-          {children}
+
+        {/* Right Side: iPhone 17 Pro Max Titanium Mockup */}
+        <div id="app-frame" className="w-full flex justify-center scroll-mt-6">
+          <IPhone17ProMaxMockup>
+            {children}
+          </IPhone17ProMaxMockup>
         </div>
       </div>
     </div>
