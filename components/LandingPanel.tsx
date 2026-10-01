@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import {
   Sparkles,
   Heart,
-  Code2,
   Palette,
   Bot,
   Zap,
@@ -14,10 +13,12 @@ import {
   CalendarHeart,
   ShieldCheck,
   ChevronRight,
+  ExternalLink,
 } from "lucide-react";
 import { useProfile } from "@/app/providers";
 import TiltCard from "@/components/TiltCard";
 import IconBadge from "@/components/ui/IconBadge";
+import ProductByBadge from "@/components/ProductByBadge";
 
 // Floating minimalist vector nodes
 const FLOATING_NODES = [
@@ -67,7 +68,7 @@ function LandingInner({ showMobileButton }: { showMobileButton?: boolean }) {
         />
       </div>
 
-      {/* Floating Vector Badges (Zero Emoji Slop) */}
+      {/* Floating Vector Badges */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 1 }}>
         {FLOATING_NODES.map((node, i) => {
           const Icon = node.icon;
@@ -87,13 +88,13 @@ function LandingInner({ showMobileButton }: { showMobileButton?: boolean }) {
 
       {/* Main Content */}
       <motion.div
-        className="relative flex flex-col gap-6 px-4 lg:px-2 items-center lg:items-start text-center lg:text-left"
+        className="relative flex flex-col gap-5 px-4 lg:px-2 items-center lg:items-start text-center lg:text-left"
         style={{ zIndex: 2 }}
         initial="hidden"
         animate="show"
         variants={{
           hidden: {},
-          show: { transition: { staggerChildren: 0.1 } },
+          show: { transition: { staggerChildren: 0.09 } },
         }}
       >
         {/* Apple Pill Badge */}
@@ -102,7 +103,7 @@ function LandingInner({ showMobileButton }: { showMobileButton?: boolean }) {
           className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-xl border border-blush-200/60 rounded-full px-4 py-2 text-xs font-semibold tracking-wide text-blush-500 shadow-softer"
         >
           <Sparkles size={14} className="text-blush-400 animate-pulse" />
-          <span>Anniversary Milestone & Self-Care Companion</span>
+          <span>Anniversary Milestone &amp; Self-Care Companion</span>
         </motion.div>
 
         {/* Headline */}
@@ -126,7 +127,7 @@ function LandingInner({ showMobileButton }: { showMobileButton?: boolean }) {
           merayakan perjalanan cinta bersama pasangan (<em>Couple Sync</em>).
         </motion.p>
 
-        {/* 3D Creator Cards (Anti-Slop Iconography) */}
+        {/* 3D Creator Cards */}
         <motion.div
           variants={{ hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } }}
           className="grid grid-cols-2 gap-3.5 w-full text-left"
@@ -140,31 +141,52 @@ function LandingInner({ showMobileButton }: { showMobileButton?: boolean }) {
                   Salsabilla Nurul H. (Acha)
                 </h3>
                 <p className="text-[10px] text-blush-500 font-bold uppercase tracking-wider mt-0.5">
-                  Ideator & Inspirasi
+                  Ideator &amp; Inspirasi
                 </p>
               </div>
               <p className="text-[10px] text-[#7A4A63] mt-2.5 leading-relaxed font-medium">
-                Pemilik ide awal dan inspirasi utama pembuatan web ini.
+                Pemilik ide awal dan inspirasi utama pembuatan web manis ini.
               </p>
             </div>
           </TiltCard>
 
-          {/* Yossika Card */}
+          {/* Yossika Card with Real Photo Avatar from Portfolio */}
           <TiltCard depth={8} className="rounded-3xl">
-            <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-4 border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.03)] flex flex-col justify-between h-full">
+            <a
+              href="https://yossikaputra.my.id/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white/80 backdrop-blur-xl rounded-3xl p-4 border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.03)] flex flex-col justify-between h-full group hover:bg-white transition-all cursor-pointer"
+            >
               <div>
-                <IconBadge icon={Code2} tint="lilac" size="md" rounded="2xl" />
-                <h3 className="font-display font-bold text-xs mt-3 text-[#503043]">
+                <div className="flex items-center justify-between">
+                  <div className="relative w-10 h-10 rounded-2xl overflow-hidden border border-lilac-200/80 shadow-sm ring-2 ring-white">
+                    <img
+                      src="/images/yossika-avatar.webp"
+                      alt="Yossika Putra Erlangga"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          "https://yossikaputra.my.id/assets/img/foto-jas-fresh.webp";
+                      }}
+                    />
+                  </div>
+                  <div className="p-1 rounded-xl bg-lilac-50 text-lilac-500 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
+                    <ExternalLink size={12} />
+                  </div>
+                </div>
+
+                <h3 className="font-display font-bold text-xs mt-2.5 text-[#503043] group-hover:text-lilac-600 transition-colors">
                   Yossika Putra Erlangga
                 </h3>
                 <p className="text-[10px] text-lilac-500 font-bold uppercase tracking-wider mt-0.5">
-                  Developer & AI Engineer
+                  Developer &amp; AI Engineer
                 </p>
               </div>
               <p className="text-[10px] text-[#7A4A63] mt-2.5 leading-relaxed font-medium">
                 Mahasiswa S1 Teknik Informatika, implementator program.
               </p>
-            </div>
+            </a>
           </TiltCard>
         </motion.div>
 
@@ -176,7 +198,7 @@ function LandingInner({ showMobileButton }: { showMobileButton?: boolean }) {
           <TiltCard depth={6} className="rounded-3xl w-full">
             <div className="relative overflow-hidden bg-white/70 backdrop-blur-xl rounded-3xl p-4.5 border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.03)] w-full text-left">
               <p className="text-[10px] font-display font-bold uppercase tracking-wider text-lilac-500 mb-2.5">
-                Implementasi & Teknologi Modern:
+                Implementasi &amp; Teknologi Modern:
               </p>
               <div className="flex flex-wrap gap-2">
                 {[
@@ -198,6 +220,14 @@ function LandingInner({ showMobileButton }: { showMobileButton?: boolean }) {
               </div>
             </div>
           </TiltCard>
+        </motion.div>
+
+        {/* Product By Badge (Inspired by ngodingpakeai with Photo & Portfolio Link) */}
+        <motion.div
+          variants={{ hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } }}
+          className="w-full pt-1 flex justify-center lg:justify-start"
+        >
+          <ProductByBadge />
         </motion.div>
 
         {/* Mobile Jump Button */}
